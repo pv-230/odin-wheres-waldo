@@ -4,20 +4,22 @@ import 'normalize.css';
 import GlobalStyle from '../common/global-style';
 import Start from './start';
 
-const AppWrapper = styled.div`
+const StyledApp = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  color: var(--dark-font-color);
+  align-items: center;
+  color: var(--dark-color);
+  background-color: var(--light-color);
 `;
 
 function App() {
   return (
     <>
       <GlobalStyle />
-      <AppWrapper>
+      <StyledApp>
         <Start />
-      </AppWrapper>
+      </StyledApp>
     </>
   );
 }

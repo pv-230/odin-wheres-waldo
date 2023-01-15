@@ -2,7 +2,8 @@ import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
   :root {
-    --dark-font-color: #111;
+    --dark-color: #111;
+    --light-color: snow;
   }
 
   *,
