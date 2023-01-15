@@ -1,50 +1,137 @@
+import { useState } from 'react';
 import styled from 'styled-components';
+import { Header, Text, Button } from '../common/common-styles';
 
-const StartWrapper = styled.div`
+const StyledStart = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  height: 100%;
 `;
 
-const Header = styled.h1`
-  margin: 0;
+const CharacterImages = styled.div`
+  display: flex;
+  gap: 10px;
 `;
+
+const CharacterImage = styled.img`
+  width: 64px;
+  height: 96px;
+`;
+
+const LocationButtons = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const LocationButton = styled(Button)`
+  border: none;
+  outline: ${(props) => (props.selected ? '2px solid limegreen' : 'none')};
+  border-radius: 0;
+  padding: 0;
+  width: 64px;
+  height: 64px;
+`;
+
+const LocationImage = styled.img`
+  width: 100%;
+  height: 100%;
+`;
+
+const ActionButtons = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const ActionButton = styled(Button)`
+  &:hover {
+    background-color: lightsalmon;
+  }
+
+  &:active {
+    background-color: salmon;
+  }
+`;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function Start() {
+  const locations = {
+    0: 'First location',
+    1: 'Second location',
+    2: 'Third location',
+  };
+
+  const [location, setLocation] = useState({
+    value: 0,
+    name: locations[0],
+  });
+
+  /**
+   * Event handler for location selections.
+   * @param {Event} e
+   */
+  function handleLocationSelection(e) {
+    const locValue = Number(e.currentTarget.dataset.location);
+    setLocation({
+      name: locations[locValue],
+      value: locValue,
+    });
+  }
+
   return (
-    <StartWrapper>
+    <StyledStart>
       <Header>Where's Waldo?</Header>
 
-      <p>How fast can you find these characters?</p>
+      <Text>How fast can you find these characters?</Text>
 
-      <div>
-        {/* TODO: Add character names to alt text */}
-        <img src="" alt="First character" />
-        <img src="" alt="Second character" />
-        <img src="" alt="Third character" />
-        <img src="" alt="Fourth character" />
-      </div>
+      {/* TODO: Add character names to alt text */}
+      <CharacterImages>
+        <CharacterImage src="" />
+        <CharacterImage src="" />
+        <CharacterImage src="" />
+        <CharacterImage src="" />
+      </CharacterImages>
 
-      <div>
-        <p>Choose a location</p>
-        <button type="button">
-          {/* TODO: Add location names to alt text */}
-          <img src="" alt="First location" />
-        </button>
-        <button type="button">
-          {/* TODO: Add location names to alt text */}
-          <img src="" alt="Second location" />
-        </button>
-        <button type="button">
-          {/* TODO: Add location names to alt text */}
-          <img src="" alt="Third location" />
-        </button>
-      </div>
+      <Text>Choose a location:</Text>
 
-      <div>
-        <button type="button">Start</button>
-        <button type="button">Leaderboard</button>
-      </div>
-    </StartWrapper>
+      {/* TODO: Add location names to image alt text */}
+      <LocationButtons>
+        <LocationButton
+          data-location="0"
+          selected={location.value === 0}
+          onClick={handleLocationSelection}
+        >
+          <LocationImage src="" />
+        </LocationButton>
+
+        <LocationButton
+          data-location="1"
+          selected={location.value === 1}
+          onClick={handleLocationSelection}
+        >
+          <LocationImage src="" />
+        </LocationButton>
+
+        <LocationButton
+          data-location="2"
+          selected={location.value === 2}
+          onClick={handleLocationSelection}
+        >
+          <LocationImage src="" />
+        </LocationButton>
+      </LocationButtons>
+
+      <Text>{location.name}</Text>
+
+      <ActionButtons>
+        <ActionButton type="button">Start</ActionButton>
+        <ActionButton type="button">Leaderboard</ActionButton>
+      </ActionButtons>
+    </StyledStart>
   );
 }
 
