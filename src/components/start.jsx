@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+
 import { Header, Text, Button } from '../common/common-styles';
 
 const StyledStart = styled.div`
@@ -56,7 +58,7 @@ const ActionButton = styled(Button)`
   }
 `;
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
+//-------------------------------------------------------------------------------------------------
 
 function Start({ startGame }) {
   // TODO: Update location names
@@ -85,7 +87,7 @@ function Start({ startGame }) {
 
   return (
     <StyledStart>
-      <Header>Where's Waldo?</Header>
+      <Header>Where&apos;s Waldo?</Header>
 
       <Text>How fast can you find these characters?</Text>
 
@@ -137,5 +139,9 @@ function Start({ startGame }) {
     </StyledStart>
   );
 }
+
+Start.propTypes = {
+  startGame: PropTypes.func.isRequired,
+};
 
 export default Start;
