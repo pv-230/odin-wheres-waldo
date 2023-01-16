@@ -58,7 +58,8 @@ const ActionButton = styled(Button)`
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-function Start() {
+function Start({ startGame }) {
+  // TODO: Update location names
   const locations = {
     0: 'First location',
     1: 'Second location',
@@ -128,7 +129,9 @@ function Start() {
       <Text>{location.name}</Text>
 
       <ActionButtons>
-        <ActionButton type="button">Start</ActionButton>
+        <ActionButton type="button" onClick={startGame}>
+          Start
+        </ActionButton>
         <ActionButton type="button">Leaderboard</ActionButton>
       </ActionButtons>
     </StyledStart>

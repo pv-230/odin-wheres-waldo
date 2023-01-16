@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import 'normalize.css';
 
 import GlobalStyle from '../common/global-style';
 import Start from './start';
+import Game from './game';
 
 const StyledApp = styled.div`
   flex: 1;
@@ -14,12 +16,16 @@ const StyledApp = styled.div`
 `;
 
 function App() {
+  const [gameStarted, setGameStarted] = useState(false);
+
+  function startGame() {
+    setGameStarted(true);
+  }
+
   return (
     <>
       <GlobalStyle />
-      <StyledApp>
-        <Start />
-      </StyledApp>
+      <StyledApp>{gameStarted ? <Game /> : <Start startGame={startGame} />}</StyledApp>
     </>
   );
 }
