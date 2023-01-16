@@ -18,4 +18,9 @@ const Button = styled.button.attrs(() => ({ type: 'button' }))`
   font-weight: bold;
 `;
 
-export { Header, Text, Button };
+const Image = styled.img`
+  width: 100%;
+  height: 100%;
+`;
+
+export { Header, Text, Button, Image };
