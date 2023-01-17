@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 
 import { Text, Button, Image } from '../common/common-styles';
+import OnTheBeach from '../images/scenes/on-the-beach.jpg';
+// import SkiSlopes from '../images/scenes/ski-slopes.jpg';
+// import SportsStadium from '../images/scenes/sports-stadium.jpg';
 
 const StyledGame = styled.div`
   display: flex;
@@ -11,7 +14,9 @@ const StyledGame = styled.div`
 
 const TopBar = styled.div`
   display: flex;
+  flex-shrink: 0;
   justify-content: center;
+  height: 175px;
 `;
 
 const TopBarContent = styled.div`
@@ -57,6 +62,14 @@ const CharacterButton = styled(Button)`
   height: 64px;
 `;
 
+const Scene = styled.div`
+  width: 100%;
+  max-width: 100vw;
+  height: 100%;
+  max-height: calc(100vh - 175px);
+  overflow: auto;
+`;
+
 //-------------------------------------------------------------------------------------------------
 
 function Game() {
@@ -86,7 +99,9 @@ function Game() {
           </CharacterButtons>
         </TopBarContent>
       </TopBar>
-      <Image />
+      <Scene>
+        <img src={OnTheBeach} alt="" />
+      </Scene>
     </StyledGame>
   );
 }
