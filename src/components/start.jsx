@@ -1,7 +1,11 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { Header, Text, Button } from '../common/common-styles';
+import { Header, Text, Button, Image } from '../common/common-styles';
+import Waldo from '../images/characters/waldo-full.webp';
+import Wenda from '../images/characters/wenda-full.webp';
+import Odlaw from '../images/characters/odlaw-full.webp';
+import Whitebeard from '../images/characters/whitebeard-full.webp';
 
 const StyledStart = styled.div`
   display: flex;
@@ -18,11 +22,6 @@ const CharacterImages = styled.div`
   gap: 10px;
 `;
 
-const CharacterImage = styled.img`
-  width: 64px;
-  height: 96px;
-`;
-
 const LocationButtons = styled.div`
   display: flex;
   gap: 10px;
@@ -35,11 +34,6 @@ const LocationButton = styled(Button)`
   padding: 0;
   width: 64px;
   height: 64px;
-`;
-
-const LocationImage = styled.img`
-  width: 100%;
-  height: 100%;
 `;
 
 const ActionButtons = styled.div`
@@ -68,10 +62,10 @@ function Start({ scene, handleSceneSelection, startGame }) {
 
       {/* TODO: Add character names to alt text */}
       <CharacterImages>
-        <CharacterImage src="" />
-        <CharacterImage src="" />
-        <CharacterImage src="" />
-        <CharacterImage src="" />
+        <img src={Waldo} alt="Waldo" />
+        <img src={Wenda} alt="Wenda" />
+        <img src={Odlaw} alt="Odlaw" />
+        <img src={Whitebeard} alt="Whitebeard" />
       </CharacterImages>
 
       <Text>Choose a location:</Text>
@@ -79,15 +73,15 @@ function Start({ scene, handleSceneSelection, startGame }) {
       {/* TODO: Add location names to image alt text */}
       <LocationButtons>
         <LocationButton data-scene="0" selected={scene.id === 0} onClick={handleSceneSelection}>
-          <LocationImage src="" alt="On the Beach" />
+          <Image src="" alt="On the Beach" />
         </LocationButton>
 
         <LocationButton data-scene="1" selected={scene.id === 1} onClick={handleSceneSelection}>
-          <LocationImage src="" alt="Ski Slopes" />
+          <Image src="" alt="Ski Slopes" />
         </LocationButton>
 
         <LocationButton data-scene="2" selected={scene.id === 2} onClick={handleSceneSelection}>
-          <LocationImage src="" alt="Sports Stadium" />
+          <Image src="" alt="Sports Stadium" />
         </LocationButton>
       </LocationButtons>
 
