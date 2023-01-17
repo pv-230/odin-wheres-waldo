@@ -1,9 +1,7 @@
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 import { Text, Button, Image } from '../common/common-styles';
-import OnTheBeach from '../images/scenes/on-the-beach.jpg';
-// import SkiSlopes from '../images/scenes/ski-slopes.jpg';
-// import SportsStadium from '../images/scenes/sports-stadium.jpg';
 
 const StyledGame = styled.div`
   display: flex;
@@ -72,7 +70,7 @@ const Scene = styled.div`
 
 //-------------------------------------------------------------------------------------------------
 
-function Game() {
+function Game({ scene }) {
   return (
     <StyledGame>
       <TopBar>
@@ -100,10 +98,17 @@ function Game() {
         </TopBarContent>
       </TopBar>
       <Scene>
-        <img src={OnTheBeach} alt="" />
+        <img src={scene.image} alt={scene.title} />
       </Scene>
     </StyledGame>
   );
 }
+
+Game.propTypes = {
+  scene: PropTypes.shape({
+    title: PropTypes.string,
+    image: PropTypes.string,
+  }).isRequired,
+};
 
 export default Game;

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
@@ -60,31 +59,7 @@ const ActionButton = styled(Button)`
 
 //-------------------------------------------------------------------------------------------------
 
-function Start({ startGame }) {
-  // TODO: Update location names
-  const locations = {
-    0: 'First location',
-    1: 'Second location',
-    2: 'Third location',
-  };
-
-  const [location, setLocation] = useState({
-    value: 0,
-    name: locations[0],
-  });
-
-  /**
-   * Event handler for location selections.
-   * @param {Event} e
-   */
-  function handleLocationSelection(e) {
-    const locValue = Number(e.currentTarget.dataset.location);
-    setLocation({
-      name: locations[locValue],
-      value: locValue,
-    });
-  }
-
+function Start({ scene, handleSceneSelection, startGame }) {
   return (
     <StyledStart>
       <Header>Where&apos;s Waldo?</Header>
@@ -103,32 +78,20 @@ function Start({ startGame }) {
 
       {/* TODO: Add location names to image alt text */}
       <LocationButtons>
-        <LocationButton
-          data-location="0"
-          selected={location.value === 0}
-          onClick={handleLocationSelection}
-        >
-          <LocationImage src="" />
+        <LocationButton data-scene="0" selected={scene.id === 0} onClick={handleSceneSelection}>
+          <LocationImage src="" alt="On the Beach" />
         </LocationButton>
 
-        <LocationButton
-          data-location="1"
-          selected={location.value === 1}
-          onClick={handleLocationSelection}
-        >
-          <LocationImage src="" />
+        <LocationButton data-scene="1" selected={scene.id === 1} onClick={handleSceneSelection}>
+          <LocationImage src="" alt="Ski Slopes" />
         </LocationButton>
 
-        <LocationButton
-          data-location="2"
-          selected={location.value === 2}
-          onClick={handleLocationSelection}
-        >
-          <LocationImage src="" />
+        <LocationButton data-scene="2" selected={scene.id === 2} onClick={handleSceneSelection}>
+          <LocationImage src="" alt="Sports Stadium" />
         </LocationButton>
       </LocationButtons>
 
-      <Text>{location.name}</Text>
+      <Text>{scene.title}</Text>
 
       <ActionButtons>
         <ActionButton type="button" onClick={startGame}>
@@ -141,6 +104,12 @@ function Start({ startGame }) {
 }
 
 Start.propTypes = {
+  scene: PropTypes.shape({
+    id: PropTypes.number,
+    title: PropTypes.string,
+    image: PropTypes.string,
+  }).isRequired,
+  handleSceneSelection: PropTypes.func.isRequired,
   startGame: PropTypes.func.isRequired,
 };
 
