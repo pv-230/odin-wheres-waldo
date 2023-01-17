@@ -27,6 +27,10 @@ function App() {
     setGameStarted(true);
   }
 
+  function stopGame() {
+    setGameStarted(false);
+  }
+
   /**
    * Event handler for scene selections.
    * @param {Event} e
@@ -41,7 +45,7 @@ function App() {
       <GlobalStyle />
       <StyledApp>
         {gameStarted ? (
-          <Game scene={scene} />
+          <Game scene={scene} stopGame={stopGame} />
         ) : (
           <Start scene={scene} handleSceneSelection={handleSceneSelection} startGame={startGame} />
         )}

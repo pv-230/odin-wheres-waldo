@@ -42,7 +42,12 @@ const TimerText = styled(Text)`
   font-size: 2rem;
 `;
 
-const RestartButton = styled(Button)`
+const StopButton = styled(Button)`
+  &:hover {
+    background-color: orangered;
+  }
+
+  background-color: tomato;
   height: 100%;
 `;
 
@@ -70,7 +75,7 @@ const Scene = styled.div`
 
 //-------------------------------------------------------------------------------------------------
 
-function Game({ scene }) {
+function Game({ scene, stopGame }) {
   return (
     <StyledGame>
       <TopBar>
@@ -79,7 +84,7 @@ function Game({ scene }) {
             <Timer>
               <TimerText>00:00</TimerText>
             </Timer>
-            <RestartButton>Restart</RestartButton>
+            <StopButton onClick={stopGame}>Quit</StopButton>
           </TimerBar>
           <CharacterButtons>
             <CharacterButton>
@@ -109,6 +114,7 @@ Game.propTypes = {
     title: PropTypes.string,
     image: PropTypes.string,
   }).isRequired,
+  stopGame: PropTypes.func.isRequired,
 };
 
 export default Game;
