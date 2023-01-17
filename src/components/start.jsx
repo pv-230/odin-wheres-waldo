@@ -6,6 +6,9 @@ import Waldo from '../images/characters/waldo-full.webp';
 import Wenda from '../images/characters/wenda-full.webp';
 import Odlaw from '../images/characters/odlaw-full.webp';
 import Whitebeard from '../images/characters/whitebeard-full.webp';
+import Beach from '../images/scenes/small/on-the-beach-small.webp';
+import Ski from '../images/scenes/small/ski-slopes-small.webp';
+import Sports from '../images/scenes/small/sports-stadium-small.webp';
 
 const StyledStart = styled.div`
   display: flex;
@@ -19,7 +22,6 @@ const StyledStart = styled.div`
 
 const CharacterImages = styled.div`
   display: flex;
-  gap: 10px;
 `;
 
 const LocationButtons = styled.div`
@@ -29,11 +31,11 @@ const LocationButtons = styled.div`
 
 const LocationButton = styled(Button)`
   border: none;
-  outline: ${(props) => (props.selected ? '2px solid limegreen' : 'none')};
+  outline: ${(props) => (props.selected ? '2px solid limegreen' : '2px solid var(--dark-color)')};
   border-radius: 0;
   padding: 0;
-  width: 64px;
-  height: 64px;
+  width: 100px;
+  height: 100px;
 `;
 
 const ActionButtons = styled.div`
@@ -68,20 +70,20 @@ function Start({ scene, handleSceneSelection, startGame }) {
         <img src={Whitebeard} alt="Whitebeard" />
       </CharacterImages>
 
-      <Text>Choose a location:</Text>
+      <Text>Choose a scene:</Text>
 
       {/* TODO: Add location names to image alt text */}
       <LocationButtons>
         <LocationButton data-scene="0" selected={scene.id === 0} onClick={handleSceneSelection}>
-          <Image src="" alt="On the Beach" />
+          <Image src={Beach} alt="On the Beach" />
         </LocationButton>
 
         <LocationButton data-scene="1" selected={scene.id === 1} onClick={handleSceneSelection}>
-          <Image src="" alt="Ski Slopes" />
+          <Image src={Ski} alt="Ski Slopes" />
         </LocationButton>
 
         <LocationButton data-scene="2" selected={scene.id === 2} onClick={handleSceneSelection}>
-          <Image src="" alt="Sports Stadium" />
+          <Image src={Sports} alt="Sports Stadium" />
         </LocationButton>
       </LocationButtons>
 
