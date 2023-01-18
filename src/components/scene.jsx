@@ -15,6 +15,7 @@ const SceneImage = styled.img.attrs((props) => ({
   },
 }))`
   transform-origin: 0 0;
+  cursor: ${(props) => (props.isPanning ? 'grab' : 'default')};
 `;
 
 function Scene({ scene }) {
@@ -55,6 +56,7 @@ function Scene({ scene }) {
         src={scene.image}
         alt={scene.title}
         translateCoords={translateCoords}
+        isPanning={isPanning}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
