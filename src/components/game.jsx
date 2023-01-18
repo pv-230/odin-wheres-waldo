@@ -47,6 +47,10 @@ const StopButton = styled(Button)`
     background-color: orangered;
   }
 
+  &:active {
+    background-color: tomato;
+  }
+
   background-color: tomato;
   height: 100%;
 `;

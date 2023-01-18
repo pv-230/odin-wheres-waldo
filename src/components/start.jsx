@@ -64,11 +64,11 @@ const ActionButtons = styled.div`
 
 const ActionButton = styled(Button)`
   &:hover {
-    background-color: lightsalmon;
+    background-color: greenyellow;
   }
 
   &:active {
-    background-color: salmon;
+    background-color: lawngreen;
   }
 `;
 
