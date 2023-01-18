@@ -6,6 +6,7 @@ import GlobalStyle from '../common/global-style';
 import SCENES from '../data/scenes';
 import Start from './start';
 import Game from './game';
+import Scene from './scene';
 
 const StyledApp = styled.div`
   flex: 1;
@@ -19,6 +20,7 @@ const StyledApp = styled.div`
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
   const [scene, setScene] = useState(SCENES[0]);
+  const SceneComponent = <Scene scene={scene} />;
 
   /**
    * Starts the game.
@@ -27,6 +29,9 @@ function App() {
     setGameStarted(true);
   }
 
+  /**
+   * Stops the game.
+   */
   function stopGame() {
     setGameStarted(false);
   }
@@ -45,7 +50,7 @@ function App() {
       <GlobalStyle />
       <StyledApp>
         {gameStarted ? (
-          <Game scene={scene} stopGame={stopGame} />
+          <Game SceneComponent={SceneComponent} stopGame={stopGame} />
         ) : (
           <Start scene={scene} handleSceneSelection={handleSceneSelection} startGame={startGame} />
         )}

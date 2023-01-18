@@ -72,17 +72,9 @@ const CharacterButton = styled(Button)`
   height: 64px;
 `;
 
-const Scene = styled.div`
-  width: 100%;
-  max-width: 100vw;
-  height: 100%;
-  max-height: calc(100vh - 175px);
-  overflow: auto;
-`;
-
 //-------------------------------------------------------------------------------------------------
 
-function Game({ scene, stopGame }) {
+function Game({ SceneComponent, stopGame }) {
   return (
     <StyledGame>
       <TopBar>
@@ -109,18 +101,13 @@ function Game({ scene, stopGame }) {
           </CharacterButtons>
         </TopBarContent>
       </TopBar>
-      <Scene>
-        <img src={scene.image} alt={scene.title} />
-      </Scene>
+      {SceneComponent}
     </StyledGame>
   );
 }
 
 Game.propTypes = {
-  scene: PropTypes.shape({
-    title: PropTypes.string,
-    image: PropTypes.string,
-  }).isRequired,
+  SceneComponent: PropTypes.element.isRequired,
   stopGame: PropTypes.func.isRequired,
 };
 
