@@ -50,7 +50,7 @@ const SceneButtons = styled.div`
 
 const SceneButton = styled(Button)`
   border: none;
-  outline: ${(props) => (props.selected ? '2px solid #dad600' : '2px solid darkgray')};
+  outline: ${(props) => (props.selected ? '2px solid greenyellow' : '2px solid darkgray')};
   box-shadow: ${(props) => (props.selected ? '0px 0px 20px #dad600;' : 'none')};
   padding: 0;
   width: 100px;
