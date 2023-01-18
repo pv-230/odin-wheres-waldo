@@ -2,6 +2,10 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import { Text, Button, Image } from '../common/common-styles';
+import Waldo from '../images/characters/small/waldo-small.webp';
+import Wenda from '../images/characters/small/wenda-small.webp';
+import Odlaw from '../images/characters/small/odlaw-small.webp';
+import Whitebeard from '../images/characters/small/whitebeard-small.webp';
 
 const StyledGame = styled.div`
   display: flex;
@@ -15,6 +19,7 @@ const TopBar = styled.div`
   flex-shrink: 0;
   justify-content: center;
   height: 175px;
+  background-color: cornflowerblue;
 `;
 
 const TopBarContent = styled.div`
@@ -62,8 +67,6 @@ const CharacterButtons = styled.div`
 `;
 
 const CharacterButton = styled(Button)`
-  border: none;
-  border-radius: 0;
   padding: 0;
   width: 64px;
   height: 64px;
@@ -92,16 +95,16 @@ function Game({ scene, stopGame }) {
           </TimerBar>
           <CharacterButtons>
             <CharacterButton>
-              <Image />
+              <Image src={Waldo} />
             </CharacterButton>
             <CharacterButton>
-              <Image />
+              <Image src={Wenda} />
             </CharacterButton>
             <CharacterButton>
-              <Image />
+              <Image src={Odlaw} />
             </CharacterButton>
             <CharacterButton>
-              <Image />
+              <Image src={Whitebeard} />
             </CharacterButton>
           </CharacterButtons>
         </TopBarContent>
