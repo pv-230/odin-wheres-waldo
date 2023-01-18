@@ -1,6 +1,10 @@
 import styled from 'styled-components';
 
-const Header = styled.h1`
+const Header1 = styled.h1`
+  margin: 0;
+`;
+
+const Header2 = styled.h2`
   margin: 0;
 `;
 
@@ -24,4 +28,4 @@ const Image = styled.img`
   height: 100%;
 `;
 
-export { Header, Text, Button, Image };
+export { Header1, Header2, Text, Button, Image };

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { Header, Text, Button, Image } from '../common/common-styles';
+import { Header1, Header2, Text, Button, Image } from '../common/common-styles';
 import Waldo from '../images/characters/waldo-full.webp';
 import Wenda from '../images/characters/wenda-full.webp';
 import Odlaw from '../images/characters/odlaw-full.webp';
@@ -24,15 +24,34 @@ const CharacterImages = styled.div`
   display: flex;
 `;
 
-const LocationButtons = styled.div`
+const SceneSelection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 352px;
+  padding: 20px 0;
+  background-color: #333;
+  color: var(--light-color);
+  border-radius: 5px;
+`;
+
+const SceneTitle = styled(Text)`
+  font-size: 1.5rem;
+  font-style: italic;
+  width: 100%;
+  text-align: center;
+`;
+
+const SceneButtons = styled.div`
   display: flex;
   gap: 10px;
 `;
 
-const LocationButton = styled(Button)`
+const SceneButton = styled(Button)`
   border: none;
-  outline: ${(props) => (props.selected ? '2px solid limegreen' : '2px solid var(--dark-color)')};
-  border-radius: 0;
+  outline: ${(props) => (props.selected ? '2px solid #dad600' : '2px solid darkgray')};
+  box-shadow: ${(props) => (props.selected ? '0px 0px 20px #dad600;' : 'none')};
   padding: 0;
   width: 100px;
   height: 100px;
@@ -58,7 +77,7 @@ const ActionButton = styled(Button)`
 function Start({ scene, handleSceneSelection, startGame }) {
   return (
     <StyledStart>
-      <Header>Where&apos;s Waldo?</Header>
+      <Header1>Where&apos;s Waldo?</Header1>
 
       <Text>How fast can you find these characters?</Text>
 
@@ -70,24 +89,26 @@ function Start({ scene, handleSceneSelection, startGame }) {
         <img src={Whitebeard} alt="Whitebeard" />
       </CharacterImages>
 
-      <Text>Choose a scene:</Text>
+      <SceneSelection>
+        <Header2>Choose a scene</Header2>
 
-      {/* TODO: Add location names to image alt text */}
-      <LocationButtons>
-        <LocationButton data-scene="0" selected={scene.id === 0} onClick={handleSceneSelection}>
-          <Image src={Beach} alt="On the Beach" />
-        </LocationButton>
+        {/* TODO: Add location names to image alt text */}
+        <SceneButtons>
+          <SceneButton data-scene="0" selected={scene.id === 0} onClick={handleSceneSelection}>
+            <Image src={Beach} alt="On the Beach" />
+          </SceneButton>
 
-        <LocationButton data-scene="1" selected={scene.id === 1} onClick={handleSceneSelection}>
-          <Image src={Ski} alt="Ski Slopes" />
-        </LocationButton>
+          <SceneButton data-scene="1" selected={scene.id === 1} onClick={handleSceneSelection}>
+            <Image src={Ski} alt="Ski Slopes" />
+          </SceneButton>
 
-        <LocationButton data-scene="2" selected={scene.id === 2} onClick={handleSceneSelection}>
-          <Image src={Sports} alt="Sports Stadium" />
-        </LocationButton>
-      </LocationButtons>
+          <SceneButton data-scene="2" selected={scene.id === 2} onClick={handleSceneSelection}>
+            <Image src={Sports} alt="Sports Stadium" />
+          </SceneButton>
+        </SceneButtons>
 
-      <Text>{scene.title}</Text>
+        <SceneTitle>{scene.title}</SceneTitle>
+      </SceneSelection>
 
       <ActionButtons>
         <ActionButton type="button" onClick={startGame}>
