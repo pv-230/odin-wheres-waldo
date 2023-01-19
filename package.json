@@ -40,7 +40,9 @@
             ".jsx"
           ]
         }
-      ]
+      ],
+      "no-unused-vars": 1,
+      "no-var": 0
     }
   },
   "browserslist": {
