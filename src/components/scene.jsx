@@ -3,19 +3,22 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 const StyledScene = styled.div`
+  display: flex;
+  justify-content: center;
   width: 100vw;
   height: calc(100vh - 175px);
   overflow: hidden;
   background-color: var(--dark-color);
 `;
 
-const SceneImage = styled.img.attrs((props) => ({
+const SceneImage = styled.img.attrs(({ translateCoords }) => ({
   style: {
-    translate: `${props.translateCoords.x}px ${props.translateCoords.y}px`,
+    translate: `${translateCoords.x}px ${translateCoords.y}px`,
   },
 }))`
-  transform-origin: 0 0;
-  cursor: ${(props) => (props.isPanning ? 'grab' : 'default')};
+  cursor: ${(props) => (props.isPanning ? 'grab' : 'pointer')};
+  width: 3000px;
+  height: 1926px;
 `;
 
 function Scene({ scene }) {
@@ -36,11 +39,12 @@ function Scene({ scene }) {
    * @param {Event} e
    */
   function handleMouseMove(e) {
-    if (!isPanning) return;
-    setTranslateCoords((oldCoords) => ({
-      x: oldCoords.x + e.movementX,
-      y: oldCoords.y + e.movementY,
-    }));
+    if (isPanning) {
+      setTranslateCoords((oldCoords) => ({
+        x: oldCoords.x + e.movementX,
+        y: oldCoords.y + e.movementY,
+      }));
+    }
   }
 
   /**
