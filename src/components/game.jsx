@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
+import SceneViewport from './scene-viewport';
 import { Text, Button, Image } from '../common/common-styles';
 import Waldo from '../images/characters/small/waldo-small.webp';
 import Wenda from '../images/characters/small/wenda-small.webp';
@@ -74,7 +75,7 @@ const CharacterButton = styled(Button)`
 
 //-------------------------------------------------------------------------------------------------
 
-function Game({ SceneComponent, stopGame }) {
+function Game({ scene, stopGame }) {
   return (
     <StyledGame>
       <TopBar>
@@ -101,13 +102,17 @@ function Game({ SceneComponent, stopGame }) {
           </CharacterButtons>
         </TopBarContent>
       </TopBar>
-      {SceneComponent}
+      <SceneViewport scene={scene} />
     </StyledGame>
   );
 }
 
 Game.propTypes = {
-  SceneComponent: PropTypes.element.isRequired,
+  scene: PropTypes.shape({
+    id: PropTypes.number,
+    title: PropTypes.string,
+    image: PropTypes.string,
+  }).isRequired,
   stopGame: PropTypes.func.isRequired,
 };
 

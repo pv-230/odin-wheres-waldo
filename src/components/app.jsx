@@ -4,9 +4,8 @@ import 'normalize.css';
 
 import GlobalStyle from '../common/global-style';
 import SCENES from '../data/scenes';
-import Start from './start';
+import StartMenu from './start-menu';
 import Game from './game';
-import Scene from './scene';
 
 const StyledApp = styled.div`
   flex: 1;
@@ -17,10 +16,11 @@ const StyledApp = styled.div`
   background-color: var(--light-color);
 `;
 
+//-------------------------------------------------------------------------------------------------
+
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
   const [scene, setScene] = useState(SCENES[0]);
-  const SceneComponent = <Scene scene={scene} />;
 
   /**
    * Starts the game.
@@ -50,9 +50,13 @@ function App() {
       <GlobalStyle />
       <StyledApp>
         {gameStarted ? (
-          <Game SceneComponent={SceneComponent} stopGame={stopGame} />
+          <Game scene={scene} stopGame={stopGame} />
         ) : (
-          <Start scene={scene} handleSceneSelection={handleSceneSelection} startGame={startGame} />
+          <StartMenu
+            scene={scene}
+            handleSceneSelection={handleSceneSelection}
+            startGame={startGame}
+          />
         )}
       </StyledApp>
     </>

@@ -10,7 +10,7 @@ import Beach from '../images/scenes/small/on-the-beach-small.webp';
 import Ski from '../images/scenes/small/ski-slopes-small.webp';
 import Sports from '../images/scenes/small/sports-stadium-small.webp';
 
-const StyledStart = styled.div`
+const StyledStartMenu = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -74,9 +74,9 @@ const ActionButton = styled(Button)`
 
 //-------------------------------------------------------------------------------------------------
 
-function Start({ scene, handleSceneSelection, startGame }) {
+function StartMenu({ scene, handleSceneSelection, startGame }) {
   return (
-    <StyledStart>
+    <StyledStartMenu>
       <Header1>Where&apos;s Waldo?</Header1>
 
       <Text>How fast can you find these characters?</Text>
@@ -116,11 +116,11 @@ function Start({ scene, handleSceneSelection, startGame }) {
         </ActionButton>
         <ActionButton type="button">Leaderboard</ActionButton>
       </ActionButtons>
-    </StyledStart>
+    </StyledStartMenu>
   );
 }
 
-Start.propTypes = {
+StartMenu.propTypes = {
   scene: PropTypes.shape({
     id: PropTypes.number,
     title: PropTypes.string,
@@ -130,4 +130,4 @@ Start.propTypes = {
   startGame: PropTypes.func.isRequired,
 };
 
-export default Start;
+export default StartMenu;
