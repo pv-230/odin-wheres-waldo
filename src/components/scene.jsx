@@ -19,6 +19,8 @@ const SceneImage = styled.img.attrs(({ translateCoords, scaleVal }) => ({
   },
 }))`
   cursor: ${(props) => (props.isPanning ? 'grab' : 'pointer')};
+  width: 3000px;
+  height: 1962px;
 `;
 
 function SceneViewport({ scene }) {
@@ -29,21 +31,55 @@ function SceneViewport({ scene }) {
   const sceneRef = useRef(null);
 
   /**
-   * Scales the scene image so that it takes up close to the full height of the scene container.
+   * Scales the scene image so that it takes up close to the full height of the scene viewport.
+   * Original image coordinates are preserved by applying the reverse scale operation:
+   *     originalCoordVal = scaledCoordVal / currentScaleVal
    */
   useEffect(() => {
-    const sceneContainerHeight = sceneRef.current.offsetHeight;
+    const sceneViewportHeight = sceneRef.current.offsetHeight;
     const sceneImageHeight = imageRef.current.offsetHeight;
-    var newImageHeight = sceneImageHeight;
-    var newImageScale = 1;
+    var tempImageHeight = sceneImageHeight;
+    var newImageScaleVal = 1;
 
-    while (newImageHeight > sceneContainerHeight && newImageScale > 0) {
-      newImageHeight = sceneImageHeight;
-      newImageScale -= 0.1;
-      newImageHeight *= newImageScale;
+    // Attempts to find the optimal scale value with a step value of 0.1 so that the scene image
+    // is scaled to fit the viewport.
+    if (sceneImageHeight > sceneViewportHeight) {
+      // Scales image down
+      while (tempImageHeight > sceneViewportHeight && newImageScaleVal > 0.1) {
+        tempImageHeight = sceneImageHeight;
+        newImageScaleVal -= 0.1;
+        tempImageHeight *= newImageScaleVal;
+      }
+    } else if (sceneImageHeight < sceneViewportHeight) {
+      // Scales image up
+      while (tempImageHeight < sceneViewportHeight && newImageScaleVal < 4) {
+        tempImageHeight = sceneImageHeight;
+        newImageScaleVal += 0.1;
+        tempImageHeight *= newImageScaleVal;
+      }
     }
-    setScaleVal(newImageScale);
+    setScaleVal(newImageScaleVal);
   }, []);
+
+  /**
+   * Debugging function for reading mouse coords.
+   */
+  function printMouseCoords(e) {
+    const rect = e.currentTarget.getBoundingClientRect();
+
+    const scaledMouseCoords = {
+      x: Math.round(e.clientX - rect.x),
+      y: Math.round(e.clientY - rect.y),
+    };
+
+    const unscaledMouseCoords = {
+      x: Math.round(scaledMouseCoords.x / scaleVal),
+      y: Math.round(scaledMouseCoords.y / scaleVal),
+    };
+
+    console.log(`scaledMouseCoords: [${scaledMouseCoords.x}, ${scaledMouseCoords.y}]`);
+    console.log(`unscaledMouseCoords: [${unscaledMouseCoords.x}, ${unscaledMouseCoords.y}]`);
+  }
 
   /**
    * Event handler for starting image panning.
@@ -59,13 +95,7 @@ function SceneViewport({ scene }) {
    * @param {Event} e
    */
   function handleMouseMove(e) {
-    // const rect = e.currentTarget.getBoundingClientRect();
-    // const sceneMouseCoords = {
-    //   x: Math.round(e.clientX - rect.x),
-    //   y: Math.round(e.clientY - rect.y),
-    // };
-    // console.log(sceneMouseCoords);
-
+    printMouseCoords(e);
     if (isPanning) {
       setTranslateCoords((oldCoords) => ({
         x: oldCoords.x + e.movementX,
@@ -87,23 +117,7 @@ function SceneViewport({ scene }) {
   function handleWheel(e) {
     const SCALE_STEP = 0.1;
     const scaleChange = e.deltaY > 0 ? -SCALE_STEP : SCALE_STEP;
-    const newScaleVal = scaleVal + scaleChange;
-
-    setScaleVal(newScaleVal);
-
-    // const rect = e.currentTarget.getBoundingClientRect();
-
-    // const sceneMouseCoords = {
-    //   x: Math.round(e.clientX - rect.x),
-    //   y: Math.round(e.clientY - rect.y),
-    // };
-    // console.log(`preZoomPoint: ${sceneMouseCoords.x}, ${sceneMouseCoords.y}`);
-
-    // const scaledMouseCoords = {
-    //   x: Math.round((sceneMouseCoords.x / scaleVal) * newZoom),
-    //   y: Math.round((sceneMouseCoords.y / scaleVal) * newZoom),
-    // };
-    // console.log(`postZoomPoint: ${scaledMouseCoords.x}, ${scaledMouseCoords.y}`);
+    setScaleVal((prevScaleValue) => prevScaleValue + scaleChange);
   }
 
   return (
