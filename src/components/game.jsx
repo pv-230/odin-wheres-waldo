@@ -13,22 +13,23 @@ const StyledGame = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
+  background-color: var(--dark-color);
 `;
 
 const TopBar = styled.div`
   display: flex;
-  flex-shrink: 0;
   justify-content: center;
+  gap: 20px;
+  width: 100%;
   height: 175px;
-  background-color: cornflowerblue;
+  padding: 20px;
 `;
 
 const TopBarContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 320px;
-  padding: 20px;
+  width: 300px;
 `;
 
 const TimerBar = styled.div`
@@ -39,6 +40,7 @@ const TimerBar = styled.div`
 
 const Timer = styled.div`
   padding: 5px;
+  border: 1px solid var(--light-color);
   border-radius: 5px;
   background-color: var(--dark-color);
 `;
@@ -71,6 +73,7 @@ const CharacterButton = styled(Button)`
   padding: 0;
   width: 64px;
   height: 64px;
+  background-color: cornflowerblue;
 `;
 
 //-------------------------------------------------------------------------------------------------

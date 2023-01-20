@@ -9,7 +9,7 @@ const StyledSceneViewport = styled.div`
   width: 100vw;
   height: calc(100vh - 175px);
   overflow: hidden;
-  background-color: var(--dark-color);
+  /* background-color: var(--dark-color); */
 `;
 
 const SceneImage = styled.img.attrs(({ translateCoords, scaleVal }) => ({
