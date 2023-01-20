@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-const StyledScene = styled.div`
+const StyledSceneViewport = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   width: 100vw;
   height: calc(100vh - 175px);
   overflow: hidden;
@@ -18,14 +19,31 @@ const SceneImage = styled.img.attrs(({ translateCoords, scaleVal }) => ({
   },
 }))`
   cursor: ${(props) => (props.isPanning ? 'grab' : 'pointer')};
-  width: 3000px;
-  height: 1926px;
 `;
 
-function Scene({ scene }) {
+function SceneViewport({ scene }) {
   const [isPanning, setIsPanning] = useState(false);
   const [translateCoords, setTranslateCoords] = useState({ x: 0, y: 0 });
   const [scaleVal, setScaleVal] = useState(1);
+  const imageRef = useRef(null);
+  const sceneRef = useRef(null);
+
+  /**
+   * Scales the scene image so that it takes up close to the full height of the scene container.
+   */
+  useEffect(() => {
+    const sceneContainerHeight = sceneRef.current.offsetHeight;
+    const sceneImageHeight = imageRef.current.offsetHeight;
+    var newImageHeight = sceneImageHeight;
+    var newImageScale = 1;
+
+    while (newImageHeight > sceneContainerHeight && newImageScale > 0) {
+      newImageHeight = sceneImageHeight;
+      newImageScale -= 0.1;
+      newImageHeight *= newImageScale;
+    }
+    setScaleVal(newImageScale);
+  }, []);
 
   /**
    * Event handler for starting image panning.
@@ -47,6 +65,7 @@ function Scene({ scene }) {
     //   y: Math.round(e.clientY - rect.y),
     // };
     // console.log(sceneMouseCoords);
+
     if (isPanning) {
       setTranslateCoords((oldCoords) => ({
         x: oldCoords.x + e.movementX,
@@ -66,11 +85,11 @@ function Scene({ scene }) {
    * Event handler for zooming in or out.
    */
   function handleWheel(e) {
-    const ZOOM_INCREMENT = 0.1;
-    const zoomChange = e.deltaY > 0 ? -ZOOM_INCREMENT : ZOOM_INCREMENT;
-    const newZoom = scaleVal + zoomChange;
+    const SCALE_STEP = 0.1;
+    const scaleChange = e.deltaY > 0 ? -SCALE_STEP : SCALE_STEP;
+    const newScaleVal = scaleVal + scaleChange;
 
-    setScaleVal(newZoom);
+    setScaleVal(newScaleVal);
 
     // const rect = e.currentTarget.getBoundingClientRect();
 
@@ -88,7 +107,7 @@ function Scene({ scene }) {
   }
 
   return (
-    <StyledScene>
+    <StyledSceneViewport ref={sceneRef}>
       <SceneImage
         src={scene.image}
         alt={scene.title}
@@ -99,12 +118,13 @@ function Scene({ scene }) {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onWheel={handleWheel}
+        ref={imageRef}
       />
-    </StyledScene>
+    </StyledSceneViewport>
   );
 }
 
-Scene.propTypes = {
+SceneViewport.propTypes = {
   scene: PropTypes.shape({
     id: PropTypes.number,
     title: PropTypes.string,
@@ -112,4 +132,4 @@ Scene.propTypes = {
   }).isRequired,
 };
 
-export default Scene;
+export default SceneViewport;
