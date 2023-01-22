@@ -28,8 +28,8 @@ const SceneImage = styled.img.attrs(({ translateCoords, scaleVal }) => ({
   },
 }))`
   cursor: ${(props) => (props.isPanning ? 'grab' : 'pointer')};
-  width: 3000px;
-  height: 1962px;
+  width: max-content;
+  height: max-content;
 `;
 
 const CharacterSelection = styled.div`
@@ -198,8 +198,6 @@ function SceneViewport({ scene, topBarHeight }) {
     if (distanceToBottomEdge < CHAR_SELECTION_HEIGHT) {
       selectionY -= CHAR_SELECTION_HEIGHT;
     }
-
-    console.log(distanceToBottomEdge);
 
     setSelectionCoords({ x: selectionX, y: selectionY });
     setShowSelection(true);
