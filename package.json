@@ -42,7 +42,8 @@
         }
       ],
       "no-unused-vars": 1,
-      "no-var": 0
+      "no-var": 0,
+      "vars-on-top": 0
     }
   },
   "browserslist": {
