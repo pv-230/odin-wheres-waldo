@@ -113,26 +113,6 @@ function SceneViewport({ scene, topBarHeight }) {
   }, []);
 
   /**
-   * Debugging function for reading mouse coords.
-   */
-  // function printMouseCoords(e) {
-  //   const rect = e.currentTarget.getBoundingClientRect();
-
-  //   const scaledMouseCoords = {
-  //     x: Math.round(e.clientX - rect.x),
-  //     y: Math.round(e.clientY - rect.y),
-  //   };
-
-  //   const unscaledMouseCoords = {
-  //     x: Math.round(scaledMouseCoords.x / scaleVal),
-  //     y: Math.round(scaledMouseCoords.y / scaleVal),
-  //   };
-
-  //   console.log(`scaledMouseCoords: [${scaledMouseCoords.x}, ${scaledMouseCoords.y}]`);
-  //   console.log(`unscaledMouseCoords: [${unscaledMouseCoords.x}, ${unscaledMouseCoords.y}]`);
-  // }
-
-  /**
    * Event handler for starting image panning.
    * @param {Event} e
    */
@@ -177,17 +157,28 @@ function SceneViewport({ scene, topBarHeight }) {
    * @param {Event} e
    */
   function handleClick(e) {
+    // Prevents showing the selection window if user has panned
+    if (translateCoords.x !== oldTranslateCoords.x && translateCoords.y !== oldTranslateCoords.y) {
+      return;
+    }
+
     var selectionX = e.clientX;
     var selectionY = e.clientY - topBarHeight;
     const viewportWidth = sceneRef.current.clientWidth;
     const viewportHeight = sceneRef.current.clientHeight;
     const distanceToRightEdge = viewportWidth - selectionX;
     const distanceToBottomEdge = viewportHeight - selectionY;
+    const sceneImageRect = e.currentTarget.getBoundingClientRect();
 
-    // Prevents showing the selection window if user has panned
-    if (translateCoords.x !== oldTranslateCoords.x && translateCoords.y !== oldTranslateCoords.y) {
-      return;
-    }
+    const scaledMouseCoords = {
+      x: Math.round(e.clientX - sceneImageRect.x),
+      y: Math.round(e.clientY - sceneImageRect.y),
+    };
+
+    const unscaledMouseCoords = {
+      x: Math.round(scaledMouseCoords.x / scaleVal),
+      y: Math.round(scaledMouseCoords.y / scaleVal),
+    };
 
     // Shifts the selection window left if there is not enough space space to the right
     if (distanceToRightEdge < CHAR_SELECTION_WIDTH) {
@@ -198,6 +189,9 @@ function SceneViewport({ scene, topBarHeight }) {
     if (distanceToBottomEdge < CHAR_SELECTION_HEIGHT) {
       selectionY -= CHAR_SELECTION_HEIGHT;
     }
+
+    console.log(`scaledMouseCoords: [${scaledMouseCoords.x}, ${scaledMouseCoords.y}]`);
+    console.log(`unscaledMouseCoords: [${unscaledMouseCoords.x}, ${unscaledMouseCoords.y}]`);
 
     setSelectionCoords({ x: selectionX, y: selectionY });
     setShowSelection(true);
