@@ -2,6 +2,12 @@ import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
+import { Text, Button, Image } from '../common/common-styles';
+import Waldo from '../images/characters/small/waldo-small.webp';
+import Wenda from '../images/characters/small/wenda-small.webp';
+import Odlaw from '../images/characters/small/odlaw-small.webp';
+import Whitebeard from '../images/characters/small/whitebeard-small.webp';
+
 const StyledSceneViewport = styled.div`
   display: flex;
   justify-content: center;
@@ -9,7 +15,7 @@ const StyledSceneViewport = styled.div`
   width: 100vw;
   height: calc(100vh - 175px);
   overflow: hidden;
-  /* background-color: var(--dark-color); */
+  position: relative;
 `;
 
 const SceneImage = styled.img.attrs(({ translateCoords, scaleVal }) => ({
@@ -23,10 +29,43 @@ const SceneImage = styled.img.attrs(({ translateCoords, scaleVal }) => ({
   height: 1962px;
 `;
 
-function SceneViewport({ scene }) {
+const CharacterSelection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  width: 300px;
+  background-color: var(--dark-color);
+  color: var(--light-color);
+  border-radius: 5px;
+  position: absolute;
+  top: ${(props) => props.topVal}px;
+  left: ${(props) => props.leftVal}px;
+`;
+
+const CharacterButtons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+const CharacterButton = styled(Button)`
+  padding: 0;
+  width: 64px;
+  height: 64px;
+  background-color: cornflowerblue;
+`;
+
+//-------------------------------------------------------------------------------------------------
+
+function SceneViewport({ scene, topBarHeight }) {
   const [isPanning, setIsPanning] = useState(false);
   const [translateCoords, setTranslateCoords] = useState({ x: 0, y: 0 });
   const [scaleVal, setScaleVal] = useState(1);
+  const [selectionCoords, setSelectionCoords] = useState({ x: 0, y: 0 });
+
+  // Refs used for initial image scaling
   const imageRef = useRef(null);
   const sceneRef = useRef(null);
 
@@ -64,22 +103,22 @@ function SceneViewport({ scene }) {
   /**
    * Debugging function for reading mouse coords.
    */
-  function printMouseCoords(e) {
-    const rect = e.currentTarget.getBoundingClientRect();
+  // function printMouseCoords(e) {
+  //   const rect = e.currentTarget.getBoundingClientRect();
 
-    const scaledMouseCoords = {
-      x: Math.round(e.clientX - rect.x),
-      y: Math.round(e.clientY - rect.y),
-    };
+  //   const scaledMouseCoords = {
+  //     x: Math.round(e.clientX - rect.x),
+  //     y: Math.round(e.clientY - rect.y),
+  //   };
 
-    const unscaledMouseCoords = {
-      x: Math.round(scaledMouseCoords.x / scaleVal),
-      y: Math.round(scaledMouseCoords.y / scaleVal),
-    };
+  //   const unscaledMouseCoords = {
+  //     x: Math.round(scaledMouseCoords.x / scaleVal),
+  //     y: Math.round(scaledMouseCoords.y / scaleVal),
+  //   };
 
-    console.log(`scaledMouseCoords: [${scaledMouseCoords.x}, ${scaledMouseCoords.y}]`);
-    console.log(`unscaledMouseCoords: [${unscaledMouseCoords.x}, ${unscaledMouseCoords.y}]`);
-  }
+  //   console.log(`scaledMouseCoords: [${scaledMouseCoords.x}, ${scaledMouseCoords.y}]`);
+  //   console.log(`unscaledMouseCoords: [${unscaledMouseCoords.x}, ${unscaledMouseCoords.y}]`);
+  // }
 
   /**
    * Event handler for starting image panning.
@@ -95,7 +134,6 @@ function SceneViewport({ scene }) {
    * @param {Event} e
    */
   function handleMouseMove(e) {
-    printMouseCoords(e);
     if (isPanning) {
       setTranslateCoords((oldCoords) => ({
         x: oldCoords.x + e.movementX,
@@ -120,6 +158,15 @@ function SceneViewport({ scene }) {
     setScaleVal((prevScaleValue) => prevScaleValue + scaleChange);
   }
 
+  /**
+   * Event handler for mouse clicks on the scene.
+   * @param {Event} e
+   */
+  function handleClick(e) {
+    console.log(`client: [${e.clientX},${e.clientY}]`);
+    setSelectionCoords({ x: e.clientX, y: e.clientY - topBarHeight });
+  }
+
   return (
     <StyledSceneViewport ref={sceneRef}>
       <SceneImage
@@ -132,8 +179,26 @@ function SceneViewport({ scene }) {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onWheel={handleWheel}
+        onClick={handleClick}
         ref={imageRef}
       />
+      <CharacterSelection leftVal={selectionCoords.x} topVal={selectionCoords.y}>
+        <Text>Who did you find?</Text>
+        <CharacterButtons>
+          <CharacterButton>
+            <Image src={Waldo} />
+          </CharacterButton>
+          <CharacterButton>
+            <Image src={Wenda} />
+          </CharacterButton>
+          <CharacterButton>
+            <Image src={Odlaw} />
+          </CharacterButton>
+          <CharacterButton>
+            <Image src={Whitebeard} />
+          </CharacterButton>
+        </CharacterButtons>
+      </CharacterSelection>
     </StyledSceneViewport>
   );
 }
@@ -144,6 +209,7 @@ SceneViewport.propTypes = {
     title: PropTypes.string,
     image: PropTypes.string,
   }).isRequired,
+  topBarHeight: PropTypes.number.isRequired,
 };
 
 export default SceneViewport;
