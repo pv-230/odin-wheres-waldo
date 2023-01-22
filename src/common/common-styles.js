@@ -23,7 +23,7 @@ const Button = styled.button.attrs(() => ({ type: 'button' }))`
   font-weight: bold;
 `;
 
-const Image = styled.img`
+const Image = styled.img.attrs(() => ({ draggable: 'false' }))`
   width: 100%;
   height: 100%;
 `;
