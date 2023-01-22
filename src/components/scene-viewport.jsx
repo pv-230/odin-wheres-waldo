@@ -8,6 +8,9 @@ import Wenda from '../images/characters/small/wenda-small.webp';
 import Odlaw from '../images/characters/small/odlaw-small.webp';
 import Whitebeard from '../images/characters/small/whitebeard-small.webp';
 
+const CHAR_SELECTION_WIDTH = 300;
+const CHAR_SELECTION_HEIGHT = 115;
+
 const StyledSceneViewport = styled.div`
   display: flex;
   justify-content: center;
@@ -32,10 +35,12 @@ const SceneImage = styled.img.attrs(({ translateCoords, scaleVal }) => ({
 const CharacterSelection = styled.div`
   display: ${(props) => (props.showSelection ? 'flex' : 'none')};
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   gap: 10px;
   padding: 10px;
-  width: 300px;
+  width: ${CHAR_SELECTION_WIDTH}px;
+  height: ${CHAR_SELECTION_HEIGHT}px;
   background-color: var(--dark-color);
   color: var(--light-color);
   border-radius: 5px;
@@ -82,8 +87,8 @@ function SceneViewport({ scene, topBarHeight }) {
    *     originalCoordVal = scaledCoordVal / currentScaleVal
    */
   useEffect(() => {
-    const sceneViewportHeight = sceneRef.current.offsetHeight;
-    const sceneImageHeight = imageRef.current.offsetHeight;
+    const sceneViewportHeight = sceneRef.current.clientHeight;
+    const sceneImageHeight = imageRef.current.clientHeight;
     var tempImageHeight = sceneImageHeight;
     var newImageScaleVal = 1;
 
@@ -172,11 +177,31 @@ function SceneViewport({ scene, topBarHeight }) {
    * @param {Event} e
    */
   function handleClick(e) {
+    var selectionX = e.clientX;
+    var selectionY = e.clientY - topBarHeight;
+    const viewportWidth = sceneRef.current.clientWidth;
+    const viewportHeight = sceneRef.current.clientHeight;
+    const distanceToRightEdge = viewportWidth - selectionX;
+    const distanceToBottomEdge = viewportHeight - selectionY;
+
+    // Prevents showing the selection window if user has panned
     if (translateCoords.x !== oldTranslateCoords.x && translateCoords.y !== oldTranslateCoords.y) {
-      // Prevents showing the selection window if user has panned
       return;
     }
-    setSelectionCoords({ x: e.clientX, y: e.clientY - topBarHeight });
+
+    // Shifts the selection window left if there is not enough space space to the right
+    if (distanceToRightEdge < CHAR_SELECTION_WIDTH) {
+      selectionX += distanceToRightEdge - CHAR_SELECTION_WIDTH;
+    }
+
+    // Shifts the selection window up if there is not enough space below
+    if (distanceToBottomEdge < CHAR_SELECTION_HEIGHT) {
+      selectionY -= CHAR_SELECTION_HEIGHT;
+    }
+
+    console.log(distanceToBottomEdge);
+
+    setSelectionCoords({ x: selectionX, y: selectionY });
     setShowSelection(true);
   }
 
