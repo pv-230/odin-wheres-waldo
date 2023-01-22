@@ -28,8 +28,8 @@ const SceneImage = styled.img.attrs(({ translateCoords, scaleVal }) => ({
   },
 }))`
   cursor: ${(props) => (props.isPanning ? 'grab' : 'pointer')};
-  width: max-content;
-  height: max-content;
+  width: ${(props) => props.sceneWidth};
+  height: ${(props) => props.sceneHeight};
 `;
 
 const CharacterSelection = styled.div`
@@ -77,8 +77,7 @@ function SceneViewport({ scene, topBarHeight }) {
   const [selectionCoords, setSelectionCoords] = useState({ x: 0, y: 0 });
   const [oldTranslateCoords, setOldTranslateCoords] = useState({ x: 0, y: 0 });
 
-  // Refs used for initial image scaling
-  const imageRef = useRef(null);
+  // Ref used for initial image scaling
   const sceneRef = useRef(null);
 
   /**
@@ -88,7 +87,7 @@ function SceneViewport({ scene, topBarHeight }) {
    */
   useEffect(() => {
     const sceneViewportHeight = sceneRef.current.clientHeight;
-    const sceneImageHeight = imageRef.current.clientHeight;
+    const sceneImageHeight = scene.height;
     var tempImageHeight = sceneImageHeight;
     var newImageScaleVal = 1;
 
@@ -110,7 +109,7 @@ function SceneViewport({ scene, topBarHeight }) {
       }
     }
     setScaleVal(newImageScaleVal);
-  }, []);
+  }, [scene.height]);
 
   /**
    * Event handler for starting image panning.
@@ -206,12 +205,13 @@ function SceneViewport({ scene, topBarHeight }) {
         isPanning={isPanning}
         translateCoords={translateCoords}
         scaleVal={scaleVal}
+        sceneWidth={scene.width}
+        sceneHeight={scene.height}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onWheel={handleWheel}
         onClick={handleClick}
-        ref={imageRef}
       />
       <CharacterSelection
         showSelection={showSelection}
@@ -243,6 +243,8 @@ SceneViewport.propTypes = {
     id: PropTypes.number,
     title: PropTypes.string,
     image: PropTypes.string,
+    width: PropTypes.number,
+    height: PropTypes.number,
   }).isRequired,
   topBarHeight: PropTypes.number.isRequired,
 };
