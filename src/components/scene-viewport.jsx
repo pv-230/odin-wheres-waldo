@@ -30,7 +30,7 @@ const SceneImage = styled.img.attrs(({ translateCoords, scaleVal }) => ({
 `;
 
 const CharacterSelection = styled.div`
-  display: flex;
+  display: ${(props) => (props.showSelection ? 'flex' : 'none')};
   flex-direction: column;
   align-items: center;
   gap: 10px;
@@ -60,10 +60,17 @@ const CharacterButton = styled(Button)`
 //-------------------------------------------------------------------------------------------------
 
 function SceneViewport({ scene, topBarHeight }) {
+  // Panning states
   const [isPanning, setIsPanning] = useState(false);
   const [translateCoords, setTranslateCoords] = useState({ x: 0, y: 0 });
+
+  // Zoom state
   const [scaleVal, setScaleVal] = useState(1);
+
+  // Character selection states
+  const [showSelection, setShowSelection] = useState(false);
   const [selectionCoords, setSelectionCoords] = useState({ x: 0, y: 0 });
+  const [oldTranslateCoords, setOldTranslateCoords] = useState({ x: 0, y: 0 });
 
   // Refs used for initial image scaling
   const imageRef = useRef(null);
@@ -127,6 +134,8 @@ function SceneViewport({ scene, topBarHeight }) {
   function handleMouseDown(e) {
     e.preventDefault(); // Prevent image dragging
     setIsPanning(true);
+    setOldTranslateCoords(translateCoords);
+    setShowSelection(false);
   }
 
   /**
@@ -159,12 +168,16 @@ function SceneViewport({ scene, topBarHeight }) {
   }
 
   /**
-   * Event handler for mouse clicks on the scene.
+   * Event handler for showing the character selection window.
    * @param {Event} e
    */
   function handleClick(e) {
-    console.log(`client: [${e.clientX},${e.clientY}]`);
+    if (translateCoords.x !== oldTranslateCoords.x && translateCoords.y !== oldTranslateCoords.y) {
+      // Prevents showing the selection window if user has panned
+      return;
+    }
     setSelectionCoords({ x: e.clientX, y: e.clientY - topBarHeight });
+    setShowSelection(true);
   }
 
   return (
@@ -182,7 +195,11 @@ function SceneViewport({ scene, topBarHeight }) {
         onClick={handleClick}
         ref={imageRef}
       />
-      <CharacterSelection leftVal={selectionCoords.x} topVal={selectionCoords.y}>
+      <CharacterSelection
+        showSelection={showSelection}
+        leftVal={selectionCoords.x}
+        topVal={selectionCoords.y}
+      >
         <Text>Who did you find?</Text>
         <CharacterButtons>
           <CharacterButton>
