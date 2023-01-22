@@ -252,6 +252,7 @@ function SceneViewport({ scene, topBarHeight }) {
         onWheel={handleWheel}
         onClick={handleClick}
       />
+
       <CharacterSelection
         showSelection={showSelection}
         leftVal={selectionBoxCoords.x}
@@ -273,6 +274,7 @@ function SceneViewport({ scene, topBarHeight }) {
           </CharacterButton>
         </CharacterButtons>
       </CharacterSelection>
+
       <TargetBox
         showTargetBox={showTargetBox}
         leftVal={targetBoxCoords.x}
