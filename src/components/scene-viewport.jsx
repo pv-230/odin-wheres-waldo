@@ -10,6 +10,7 @@ import Whitebeard from '../images/characters/small/whitebeard-small.webp';
 
 const CHAR_SELECTION_WIDTH = 300;
 const CHAR_SELECTION_HEIGHT = 115;
+const TARGET_BOX_SIZE = 100;
 
 const StyledSceneViewport = styled.div`
   display: flex;
@@ -62,6 +63,17 @@ const CharacterButton = styled(Button)`
   background-color: cornflowerblue;
 `;
 
+const TargetBox = styled.div`
+  display: ${(props) => (props.showTargetBox ? 'block' : 'none')};
+  width: ${TARGET_BOX_SIZE}px;
+  height: ${TARGET_BOX_SIZE}px;
+  border: 4px solid crimson;
+  border-radius: 5px;
+  position: absolute;
+  top: ${(props) => props.topVal}px;
+  left: ${(props) => props.leftVal}px;
+`;
+
 //-------------------------------------------------------------------------------------------------
 
 function SceneViewport({ scene, topBarHeight }) {
@@ -76,6 +88,8 @@ function SceneViewport({ scene, topBarHeight }) {
   const [showSelection, setShowSelection] = useState(false);
   const [selectionCoords, setSelectionCoords] = useState({ x: 0, y: 0 });
   const [oldTranslateCoords, setOldTranslateCoords] = useState({ x: 0, y: 0 });
+  const [targetCoords, setTargetCoords] = useState({ x: 0, y: 0 });
+  const [showTargetBox, setShowTargetBox] = useState(false);
 
   // Ref used for initial image scaling
   const sceneRef = useRef(null);
@@ -120,6 +134,7 @@ function SceneViewport({ scene, topBarHeight }) {
     setIsPanning(true);
     setOldTranslateCoords(translateCoords);
     setShowSelection(false);
+    setShowTargetBox(false);
   }
 
   /**
@@ -150,6 +165,7 @@ function SceneViewport({ scene, topBarHeight }) {
     const scaleChange = e.deltaY > 0 ? -SCALE_STEP : SCALE_STEP;
     setScaleVal((prevScaleValue) => prevScaleValue + scaleChange);
     setShowSelection(false);
+    setShowTargetBox(false);
   }
 
   /**
@@ -162,39 +178,43 @@ function SceneViewport({ scene, topBarHeight }) {
       return;
     }
 
-    var selectionX = e.clientX;
-    var selectionY = e.clientY - topBarHeight;
-    const viewportWidth = sceneRef.current.clientWidth;
-    const viewportHeight = sceneRef.current.clientHeight;
-    const distanceToRightEdge = viewportWidth - selectionX;
-    const distanceToBottomEdge = viewportHeight - selectionY;
+    // Selection window measurements
+    var selectionX = e.clientX - CHAR_SELECTION_WIDTH / 2;
+    var selectionY = e.clientY - topBarHeight - CHAR_SELECTION_HEIGHT - TARGET_BOX_SIZE / 2;
+    const distanceToRightEdge = sceneRef.current.clientWidth - selectionX;
+    const distanceToLeftEdge = e.clientX;
+    const distanceToTopEdge = e.clientY - topBarHeight;
+
+    // Target box measurements
+    const targetX = e.clientX - TARGET_BOX_SIZE / 2;
+    const targetY = e.clientY - topBarHeight - TARGET_BOX_SIZE / 2;
+
+    // Mouse coordinates adjusted for scaling
     const sceneImageRect = e.currentTarget.getBoundingClientRect();
-
-    const scaledMouseCoords = {
-      x: Math.round(e.clientX - sceneImageRect.x),
-      y: Math.round(e.clientY - sceneImageRect.y),
-    };
-
     const unscaledMouseCoords = {
-      x: Math.round(scaledMouseCoords.x / scaleVal),
-      y: Math.round(scaledMouseCoords.y / scaleVal),
+      x: Math.round((e.clientX - sceneImageRect.x) / scaleVal),
+      y: Math.round((e.clientY - sceneImageRect.y) / scaleVal),
     };
 
     // Shifts the selection window left if there is not enough space space to the right
     if (distanceToRightEdge < CHAR_SELECTION_WIDTH) {
-      selectionX += distanceToRightEdge - CHAR_SELECTION_WIDTH;
+      selectionX -= CHAR_SELECTION_WIDTH - distanceToRightEdge;
+    }
+
+    // Shifts the selection window right if there is not enough space space to the left
+    if (distanceToLeftEdge < CHAR_SELECTION_WIDTH / 2) {
+      selectionX += CHAR_SELECTION_WIDTH / 2 - distanceToLeftEdge;
     }
 
     // Shifts the selection window up if there is not enough space below
-    if (distanceToBottomEdge < CHAR_SELECTION_HEIGHT) {
-      selectionY -= CHAR_SELECTION_HEIGHT;
+    if (distanceToTopEdge < CHAR_SELECTION_HEIGHT + TARGET_BOX_SIZE / 2) {
+      selectionY += CHAR_SELECTION_HEIGHT + TARGET_BOX_SIZE;
     }
-
-    console.log(`scaledMouseCoords: [${scaledMouseCoords.x}, ${scaledMouseCoords.y}]`);
-    console.log(`unscaledMouseCoords: [${unscaledMouseCoords.x}, ${unscaledMouseCoords.y}]`);
 
     setSelectionCoords({ x: selectionX, y: selectionY });
     setShowSelection(true);
+    setTargetCoords({ x: targetX, y: targetY });
+    setShowTargetBox(true);
   }
 
   return (
@@ -234,6 +254,7 @@ function SceneViewport({ scene, topBarHeight }) {
           </CharacterButton>
         </CharacterButtons>
       </CharacterSelection>
+      <TargetBox showTargetBox={showTargetBox} leftVal={targetCoords.x} topVal={targetCoords.y} />
     </StyledSceneViewport>
   );
 }
