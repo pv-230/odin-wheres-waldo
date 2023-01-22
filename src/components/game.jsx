@@ -8,6 +8,8 @@ import Wenda from '../images/characters/small/wenda-small.webp';
 import Odlaw from '../images/characters/small/odlaw-small.webp';
 import Whitebeard from '../images/characters/small/whitebeard-small.webp';
 
+const TOP_BAR_HEIGHT = 175;
+
 const StyledGame = styled.div`
   display: flex;
   flex-direction: column;
@@ -21,7 +23,7 @@ const TopBar = styled.div`
   justify-content: center;
   gap: 20px;
   width: 100%;
-  height: 175px;
+  height: ${TOP_BAR_HEIGHT}px;
   padding: 20px;
 `;
 
@@ -48,6 +50,7 @@ const Timer = styled.div`
 const TimerText = styled(Text)`
   color: var(--light-color);
   font-size: 2rem;
+  user-select: none;
 `;
 
 const StopButton = styled(Button)`
@@ -63,17 +66,17 @@ const StopButton = styled(Button)`
   height: 100%;
 `;
 
-const CharacterButtons = styled.div`
+const CharacterImages = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
 `;
 
-const CharacterButton = styled(Button)`
-  padding: 0;
+const CharacterImage = styled(Image)`
   width: 64px;
   height: 64px;
   background-color: cornflowerblue;
+  border-radius: 5px;
 `;
 
 //-------------------------------------------------------------------------------------------------
@@ -89,23 +92,15 @@ function Game({ scene, stopGame }) {
             </Timer>
             <StopButton onClick={stopGame}>Quit</StopButton>
           </TimerBar>
-          <CharacterButtons>
-            <CharacterButton>
-              <Image src={Waldo} />
-            </CharacterButton>
-            <CharacterButton>
-              <Image src={Wenda} />
-            </CharacterButton>
-            <CharacterButton>
-              <Image src={Odlaw} />
-            </CharacterButton>
-            <CharacterButton>
-              <Image src={Whitebeard} />
-            </CharacterButton>
-          </CharacterButtons>
+          <CharacterImages>
+            <CharacterImage src={Waldo} />
+            <CharacterImage src={Wenda} />
+            <CharacterImage src={Odlaw} />
+            <CharacterImage src={Whitebeard} />
+          </CharacterImages>
         </TopBarContent>
       </TopBar>
-      <SceneViewport scene={scene} />
+      <SceneViewport scene={scene} topBarHeight={TOP_BAR_HEIGHT} />
     </StyledGame>
   );
 }
