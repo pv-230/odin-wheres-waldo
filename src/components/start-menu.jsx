@@ -78,10 +78,8 @@ function StartMenu({ scene, handleSceneSelection, startGame }) {
   return (
     <StyledStartMenu>
       <Header1>Where&apos;s Waldo?</Header1>
-
       <Text>How fast can you find these characters?</Text>
 
-      {/* TODO: Add character names to alt text */}
       <CharacterImages>
         <img src={Waldo} alt="Waldo" />
         <img src={Wenda} alt="Wenda" />
@@ -91,22 +89,17 @@ function StartMenu({ scene, handleSceneSelection, startGame }) {
 
       <SceneSelection>
         <Header2>Choose a scene</Header2>
-
-        {/* TODO: Add location names to image alt text */}
         <SceneButtons>
           <SceneButton data-scene="0" selected={scene.id === 0} onClick={handleSceneSelection}>
             <Image src={Beach} alt="On the Beach" />
           </SceneButton>
-
           <SceneButton data-scene="1" selected={scene.id === 1} onClick={handleSceneSelection}>
             <Image src={Ski} alt="Ski Slopes" />
           </SceneButton>
-
           <SceneButton data-scene="2" selected={scene.id === 2} onClick={handleSceneSelection}>
             <Image src={Sports} alt="Sports Stadium" />
           </SceneButton>
         </SceneButtons>
-
         <SceneTitle>{scene.title}</SceneTitle>
       </SceneSelection>
 
