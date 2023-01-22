@@ -150,6 +150,7 @@ function SceneViewport({ scene, topBarHeight }) {
     const SCALE_STEP = 0.1;
     const scaleChange = e.deltaY > 0 ? -SCALE_STEP : SCALE_STEP;
     setScaleVal((prevScaleValue) => prevScaleValue + scaleChange);
+    setShowSelection(false);
   }
 
   /**
