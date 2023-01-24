@@ -1,6 +1,6 @@
-import OnTheBeach from '../images/scenes/on-the-beach.jpg';
-import SkiSlopes from '../images/scenes/ski-slopes.jpg';
-import SportsStadium from '../images/scenes/sports-stadium.jpg';
+import OnTheBeach from '../images/scenes/on-the-beach.webp';
+import SkiSlopes from '../images/scenes/ski-slopes.webp';
+import SportsStadium from '../images/scenes/sports-stadium.webp';
 
 const SCENES = [
   {
