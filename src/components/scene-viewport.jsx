@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { doc, getFirestore, getDoc } from 'firebase/firestore';
 
 import { Text, Button, Image } from '../common/common-styles';
+import { db } from '../firebase';
 import Waldo from '../images/characters/small/waldo-small.webp';
 import Wenda from '../images/characters/small/wenda-small.webp';
 import Odlaw from '../images/characters/small/odlaw-small.webp';
@@ -11,6 +13,7 @@ import Whitebeard from '../images/characters/small/whitebeard-small.webp';
 const CHAR_SELECTION_WIDTH = 300;
 const CHAR_SELECTION_HEIGHT = 115;
 const TARGET_BOX_SIZE = 100;
+const FIRESTORE = getFirestore(db);
 
 const StyledSceneViewport = styled.div`
   display: flex;
@@ -226,11 +229,35 @@ function SceneViewport({ scene, topBarHeight }) {
    * Validates correct location of character selection.
    * @param {Event} e
    */
-  function handleSelection(e) {
-    const { character } = e.currentTarget.dataset;
+  async function handleSelection(e) {
+    var sceneDocName;
+    const characterDocName = e.currentTarget.dataset.character;
 
-    console.log(`character: ${character}`);
-    console.log(`location: [${mouseCoords.x},${mouseCoords.y}]`);
+    // Sets the appropriate scene name that is expected in the database
+    if (scene.id === 0) {
+      sceneDocName = 'beach';
+    } else if (scene.id === 1) {
+      sceneDocName = 'slopes';
+    } else if (scene.id === 2) {
+      sceneDocName = 'stadium';
+    } else {
+      throw new Error('handleSelection(): Invalid scene ID');
+    }
+
+    const characterDoc = doc(FIRESTORE, 'scenes', sceneDocName, 'characters', characterDocName);
+    const coordsField = await (await getDoc(characterDoc)).get('coords');
+
+    // Checks if the targeted location contains the selected character
+    if (
+      mouseCoords.x >= coordsField[0] - 50 &&
+      mouseCoords.x <= coordsField[0] + 50 &&
+      mouseCoords.y >= coordsField[1] - 50 &&
+      mouseCoords.y <= coordsField[1] + 50
+    ) {
+      console.log('correct');
+    } else {
+      console.log('incorrect');
+    }
 
     setShowSelection(false);
     setShowTargetBox(false);
