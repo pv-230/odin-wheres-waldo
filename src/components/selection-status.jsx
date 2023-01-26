@@ -5,8 +5,25 @@ import { Text } from '../common/common-styles';
 
 const StatusText = styled(Text)`
   font-size: 1.5rem;
-  /* color: ${(props) => (props.isCorrect ? 'green' : 'red')}; */
   color: var(--light-color);
+`;
+
+const Spinner = styled.div`
+  width: 64px;
+  height: 64px;
+  border: 5px solid var(--light-color);
+  border-radius: 50%;
+  border-bottom: 5px solid cornflowerblue;
+  animation: 500ms linear infinite spinner;
+
+  @keyframes spinner {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 `;
 
 //-------------------------------------------------------------------------------------------------
@@ -23,7 +40,7 @@ function SelectionStatus({ showSpinner, isCorrect, selectedCharacter }) {
     statusText = `${selectedCharacterCapitalized} isn't there!`;
   }
 
-  return showSpinner ? 'spinner' : <StatusText isCorrect={isCorrect}>{statusText}</StatusText>;
+  return showSpinner ? <Spinner /> : <StatusText>{statusText}</StatusText>;
 }
 
 SelectionStatus.propTypes = {
