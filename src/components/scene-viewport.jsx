@@ -37,7 +37,7 @@ const SceneImage = styled.img.attrs(({ translateCoords, scaleVal }) => ({
 `;
 
 const CharacterSelection = styled.div`
-  display: ${(props) => (props.showSelection ? 'flex' : 'none')};
+  display: ${(props) => (props.showSelectionBox ? 'flex' : 'none')};
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
@@ -88,7 +88,7 @@ function SceneViewport({ scene, topBarHeight }) {
   const [scaleVal, setScaleVal] = useState(1);
 
   // Character selection and target box states
-  const [showSelection, setShowSelection] = useState(false);
+  const [showSelectionBox, setShowSelectionBox] = useState(false);
   const [selectionBoxCoords, setSelectionBoxCoords] = useState({ x: 0, y: 0 });
   const [oldTranslateCoords, setOldTranslateCoords] = useState({ x: 0, y: 0 });
   const [showTargetBox, setShowTargetBox] = useState(false);
@@ -137,7 +137,7 @@ function SceneViewport({ scene, topBarHeight }) {
     e.preventDefault(); // Prevent image dragging
     setIsPanning(true);
     setOldTranslateCoords(translateCoords);
-    setShowSelection(false);
+    setShowSelectionBox(false);
     setShowTargetBox(false);
   }
 
@@ -168,7 +168,7 @@ function SceneViewport({ scene, topBarHeight }) {
     const SCALE_STEP = 0.1;
     const scaleChange = e.deltaY > 0 ? -SCALE_STEP : SCALE_STEP;
     setScaleVal((prevScaleValue) => prevScaleValue + scaleChange);
-    setShowSelection(false);
+    setShowSelectionBox(false);
     setShowTargetBox(false);
   }
 
@@ -219,10 +219,10 @@ function SceneViewport({ scene, topBarHeight }) {
     }
 
     setSelectionBoxCoords({ x: selectionX, y: selectionY });
-    setShowSelection(true);
     setTargetBoxCoords({ x: targetX, y: targetY });
-    setShowTargetBox(true);
     setMouseCoords(unscaledMouseCoords);
+    setShowSelectionBox(true);
+    setShowTargetBox(true);
   }
 
   /**
@@ -258,9 +258,6 @@ function SceneViewport({ scene, topBarHeight }) {
     } else {
       console.log('incorrect');
     }
-
-    setShowSelection(false);
-    setShowTargetBox(false);
   }
 
   return (
@@ -281,23 +278,23 @@ function SceneViewport({ scene, topBarHeight }) {
       />
 
       <CharacterSelection
-        showSelection={showSelection}
+        showSelectionBox={showSelectionBox}
         leftVal={selectionBoxCoords.x}
         topVal={selectionBoxCoords.y}
       >
         <Text>Who did you find?</Text>
         <CharacterButtons>
-          <CharacterButton>
-            <Image src={Waldo} alt="Waldo" data-character="waldo" onClick={handleSelection} />
+          <CharacterButton data-character="waldo" onClick={handleSelection}>
+            <Image src={Waldo} alt="Waldo" />
           </CharacterButton>
-          <CharacterButton>
-            <Image src={Wenda} alt="Wenda" data-character="wenda" onClick={handleSelection} />
+          <CharacterButton data-character="wenda" onClick={handleSelection}>
+            <Image src={Wenda} alt="Wenda" />
           </CharacterButton>
-          <CharacterButton>
-            <Image src={Odlaw} alt="Odlaw" data-character="odlaw" onClick={handleSelection} />
+          <CharacterButton data-character="odlaw" onClick={handleSelection}>
+            <Image src={Odlaw} alt="Odlaw" />
           </CharacterButton>
-          <CharacterButton>
-            <Image src={Whitebeard} data-character="whitebeard" onClick={handleSelection} />
+          <CharacterButton data-character="whitebeard" onClick={handleSelection}>
+            <Image src={Whitebeard} />
           </CharacterButton>
         </CharacterButtons>
       </CharacterSelection>
