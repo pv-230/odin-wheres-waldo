@@ -5,6 +5,7 @@ import { doc, getFirestore, getDoc } from 'firebase/firestore';
 
 import { Text, Button, Image } from '../common/common-styles';
 import { db } from '../firebase';
+import SelectionStatus from './selection-status';
 import Waldo from '../images/characters/small/waldo-small.webp';
 import Wenda from '../images/characters/small/wenda-small.webp';
 import Odlaw from '../images/characters/small/odlaw-small.webp';
@@ -20,7 +21,7 @@ const StyledSceneViewport = styled.div`
   justify-content: center;
   align-items: center;
   width: 100vw;
-  height: calc(100vh - 175px);
+  height: ${(props) => `calc(100vh - ${props.topBarHeight}px)`};
   overflow: hidden;
   position: relative;
 `;
@@ -36,10 +37,10 @@ const SceneImage = styled.img.attrs(({ translateCoords, scaleVal }) => ({
   height: ${(props) => props.sceneHeight};
 `;
 
-const CharacterSelection = styled.div`
+const CharacterSelectionBox = styled.div`
   display: ${(props) => (props.showSelectionBox ? 'flex' : 'none')};
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   gap: 10px;
   padding: 10px;
@@ -47,6 +48,7 @@ const CharacterSelection = styled.div`
   height: ${CHAR_SELECTION_HEIGHT}px;
   background-color: var(--dark-color);
   color: var(--light-color);
+  border: 1px solid cornflowerblue;
   border-radius: 5px;
   position: absolute;
   top: ${(props) => props.topVal}px;
@@ -94,6 +96,10 @@ function SceneViewport({ scene, topBarHeight }) {
   const [showTargetBox, setShowTargetBox] = useState(false);
   const [targetBoxCoords, setTargetBoxCoords] = useState({ x: 0, y: 0 });
   const [mouseCoords, setMouseCoords] = useState({ x: 0, y: 0 });
+  const [hasSelected, setHasSelected] = useState(false);
+  const [showSpinner, setShowSpinner] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [selectedCharacter, setSelectedCharacter] = useState('');
 
   // Ref used for initial image scaling
   const sceneRef = useRef(null);
@@ -139,6 +145,7 @@ function SceneViewport({ scene, topBarHeight }) {
     setOldTranslateCoords(translateCoords);
     setShowSelectionBox(false);
     setShowTargetBox(false);
+    setHasSelected(false);
   }
 
   /**
@@ -170,6 +177,7 @@ function SceneViewport({ scene, topBarHeight }) {
     setScaleVal((prevScaleValue) => prevScaleValue + scaleChange);
     setShowSelectionBox(false);
     setShowTargetBox(false);
+    setHasSelected(false);
   }
 
   /**
@@ -244,24 +252,29 @@ function SceneViewport({ scene, topBarHeight }) {
       throw new Error('handleSelection(): Invalid scene ID');
     }
 
+    setSelectedCharacter(characterDocName);
+    setHasSelected(true);
+    setShowSpinner(true);
     const characterDoc = doc(FIRESTORE, 'scenes', sceneDocName, 'characters', characterDocName);
     const coordsField = await (await getDoc(characterDoc)).get('coords');
+    setShowSpinner(false);
+    setShowTargetBox(false);
 
     // Checks if the targeted location contains the selected character
     if (
-      mouseCoords.x >= coordsField[0] - 50 &&
-      mouseCoords.x <= coordsField[0] + 50 &&
-      mouseCoords.y >= coordsField[1] - 50 &&
-      mouseCoords.y <= coordsField[1] + 50
+      mouseCoords.x >= coordsField[0] - TARGET_BOX_SIZE / 2 &&
+      mouseCoords.x <= coordsField[0] + TARGET_BOX_SIZE / 2 &&
+      mouseCoords.y >= coordsField[1] - TARGET_BOX_SIZE / 2 &&
+      mouseCoords.y <= coordsField[1] + TARGET_BOX_SIZE / 2
     ) {
-      console.log('correct');
+      setIsCorrect(true);
     } else {
-      console.log('incorrect');
+      setIsCorrect(false);
     }
   }
 
   return (
-    <StyledSceneViewport ref={sceneRef}>
+    <StyledSceneViewport topBarHeight={topBarHeight} ref={sceneRef}>
       <SceneImage
         src={scene.image}
         alt={scene.title}
@@ -277,27 +290,37 @@ function SceneViewport({ scene, topBarHeight }) {
         onClick={handleClick}
       />
 
-      <CharacterSelection
+      <CharacterSelectionBox
         showSelectionBox={showSelectionBox}
         leftVal={selectionBoxCoords.x}
         topVal={selectionBoxCoords.y}
       >
-        <Text>Who did you find?</Text>
-        <CharacterButtons>
-          <CharacterButton data-character="waldo" onClick={handleSelection}>
-            <Image src={Waldo} alt="Waldo" />
-          </CharacterButton>
-          <CharacterButton data-character="wenda" onClick={handleSelection}>
-            <Image src={Wenda} alt="Wenda" />
-          </CharacterButton>
-          <CharacterButton data-character="odlaw" onClick={handleSelection}>
-            <Image src={Odlaw} alt="Odlaw" />
-          </CharacterButton>
-          <CharacterButton data-character="whitebeard" onClick={handleSelection}>
-            <Image src={Whitebeard} />
-          </CharacterButton>
-        </CharacterButtons>
-      </CharacterSelection>
+        {hasSelected ? (
+          <SelectionStatus
+            showSpinner={showSpinner}
+            isCorrect={isCorrect}
+            selectedCharacter={selectedCharacter}
+          />
+        ) : (
+          <>
+            <Text>Who did you find?</Text>
+            <CharacterButtons>
+              <CharacterButton data-character="waldo" onClick={handleSelection}>
+                <Image src={Waldo} alt="Waldo" />
+              </CharacterButton>
+              <CharacterButton data-character="wenda" onClick={handleSelection}>
+                <Image src={Wenda} alt="Wenda" />
+              </CharacterButton>
+              <CharacterButton data-character="odlaw" onClick={handleSelection}>
+                <Image src={Odlaw} alt="Odlaw" />
+              </CharacterButton>
+              <CharacterButton data-character="whitebeard" onClick={handleSelection}>
+                <Image src={Whitebeard} />
+              </CharacterButton>
+            </CharacterButtons>
+          </>
+        )}
+      </CharacterSelectionBox>
 
       <TargetBox
         showTargetBox={showTargetBox}
