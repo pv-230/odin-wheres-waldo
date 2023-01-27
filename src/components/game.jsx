@@ -1,12 +1,14 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import SceneViewport from './scene-viewport';
-import { Text, Button, Image } from '../common/common-styles';
+import { Text, Button, CharacterImage, Check } from '../common/common-styles';
 import Waldo from '../images/characters/small/waldo-small.webp';
 import Wenda from '../images/characters/small/wenda-small.webp';
 import Odlaw from '../images/characters/small/odlaw-small.webp';
 import Whitebeard from '../images/characters/small/whitebeard-small.webp';
+import CheckSvg from '../images/icons/check.svg';
 
 const TOP_BAR_HEIGHT = 175;
 
@@ -72,16 +74,22 @@ const CharacterImages = styled.div`
   width: 100%;
 `;
 
-const CharacterImage = styled(Image)`
+const CharacterImageWrapper = styled.div`
   width: 64px;
   height: 64px;
-  background-color: cornflowerblue;
-  border-radius: 5px;
+  position: relative;
 `;
 
 //-------------------------------------------------------------------------------------------------
 
 function Game({ scene, stopGame }) {
+  const [charactersFound, setCharactersFound] = useState({
+    waldo: false,
+    wenda: false,
+    odlaw: false,
+    whitebeard: false,
+  });
+
   return (
     <StyledGame>
       <TopBar>
@@ -93,14 +101,31 @@ function Game({ scene, stopGame }) {
             <StopButton onClick={stopGame}>Quit</StopButton>
           </TimerBar>
           <CharacterImages>
-            <CharacterImage src={Waldo} />
-            <CharacterImage src={Wenda} />
-            <CharacterImage src={Odlaw} />
-            <CharacterImage src={Whitebeard} />
+            <CharacterImageWrapper>
+              <Check src={CheckSvg} showCheck={charactersFound.waldo} />
+              <CharacterImage src={Waldo} isGray={charactersFound.waldo} />
+            </CharacterImageWrapper>
+            <CharacterImageWrapper>
+              <Check src={CheckSvg} showCheck={charactersFound.wenda} />
+              <CharacterImage src={Wenda} isGray={charactersFound.wenda} />
+            </CharacterImageWrapper>
+            <CharacterImageWrapper>
+              <Check src={CheckSvg} showCheck={charactersFound.odlaw} />
+              <CharacterImage src={Odlaw} isGray={charactersFound.odlaw} />
+            </CharacterImageWrapper>
+            <CharacterImageWrapper>
+              <Check src={CheckSvg} showCheck={charactersFound.whitebeard} />
+              <CharacterImage src={Whitebeard} isGray={charactersFound.whitebeard} />
+            </CharacterImageWrapper>
           </CharacterImages>
         </TopBarContent>
       </TopBar>
-      <SceneViewport scene={scene} topBarHeight={TOP_BAR_HEIGHT} />
+      <SceneViewport
+        scene={scene}
+        topBarHeight={TOP_BAR_HEIGHT}
+        charactersFound={charactersFound}
+        setCharactersFound={setCharactersFound}
+      />
     </StyledGame>
   );
 }

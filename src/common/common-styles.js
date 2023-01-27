@@ -28,4 +28,18 @@ const Image = styled.img.attrs(() => ({ draggable: 'false' }))`
   height: 100%;
 `;
 
-export { Header1, Header2, Text, Button, Image };
+const CharacterImage = styled(Image)`
+  border-radius: 5px;
+  width: 100%;
+  height: 100%;
+  background-color: cornflowerblue;
+  filter: ${(props) => (props.isGray ? 'grayscale(100%)' : 'none')};
+`;
+
+const Check = styled(Image)`
+  position: absolute;
+  display: ${(props) => (props.showCheck ? 'block' : 'none')};
+  z-index: 1;
+`;
+
+export { Header1, Header2, Text, Button, Image, CharacterImage, Check };

@@ -3,13 +3,14 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { doc, getFirestore, getDoc } from 'firebase/firestore';
 
-import { Text, Button, Image } from '../common/common-styles';
+import { Text, Button, CharacterImage, Check } from '../common/common-styles';
 import { db } from '../firebase';
 import SelectionStatus from './selection-status';
 import Waldo from '../images/characters/small/waldo-small.webp';
 import Wenda from '../images/characters/small/wenda-small.webp';
 import Odlaw from '../images/characters/small/odlaw-small.webp';
 import Whitebeard from '../images/characters/small/whitebeard-small.webp';
+import CheckSvg from '../images/icons/check.svg';
 
 const CHAR_SELECTION_WIDTH = 300;
 const CHAR_SELECTION_HEIGHT = 115;
@@ -66,6 +67,8 @@ const CharacterButton = styled(Button)`
   width: 64px;
   height: 64px;
   background-color: cornflowerblue;
+  position: relative;
+  cursor: ${(props) => (props.disabled ? 'default' : 'pointer')};
 `;
 
 const TargetBox = styled.div`
@@ -81,7 +84,7 @@ const TargetBox = styled.div`
 
 //-------------------------------------------------------------------------------------------------
 
-function SceneViewport({ scene, topBarHeight }) {
+function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFound }) {
   // Panning states
   const [isPanning, setIsPanning] = useState(false);
   const [translateCoords, setTranslateCoords] = useState({ x: 0, y: 0 });
@@ -255,8 +258,11 @@ function SceneViewport({ scene, topBarHeight }) {
     setSelectedCharacter(characterDocName);
     setHasSelected(true);
     setShowSpinner(true);
+
+    // Gets coordinates from database
     const characterDoc = doc(FIRESTORE, 'scenes', sceneDocName, 'characters', characterDocName);
     const coordsField = await (await getDoc(characterDoc)).get('coords');
+
     setShowSpinner(false);
     setShowTargetBox(false);
 
@@ -268,6 +274,7 @@ function SceneViewport({ scene, topBarHeight }) {
       mouseCoords.y <= coordsField[1] + TARGET_BOX_SIZE / 2
     ) {
       setIsCorrect(true);
+      setCharactersFound({ ...charactersFound, [characterDocName]: true });
     } else {
       setIsCorrect(false);
     }
@@ -305,17 +312,37 @@ function SceneViewport({ scene, topBarHeight }) {
           <>
             <Text>Who did you find?</Text>
             <CharacterButtons>
-              <CharacterButton data-character="waldo" onClick={handleSelection}>
-                <Image src={Waldo} alt="Waldo" />
+              <CharacterButton
+                data-character="waldo"
+                onClick={handleSelection}
+                disabled={charactersFound.waldo}
+              >
+                <Check src={CheckSvg} showCheck={charactersFound.waldo} />
+                <CharacterImage src={Waldo} isGray={charactersFound.waldo} />
               </CharacterButton>
-              <CharacterButton data-character="wenda" onClick={handleSelection}>
-                <Image src={Wenda} alt="Wenda" />
+              <CharacterButton
+                data-character="wenda"
+                onClick={handleSelection}
+                disabled={charactersFound.wenda}
+              >
+                <Check src={CheckSvg} showCheck={charactersFound.wenda} />
+                <CharacterImage src={Wenda} isGray={charactersFound.wenda} />
               </CharacterButton>
-              <CharacterButton data-character="odlaw" onClick={handleSelection}>
-                <Image src={Odlaw} alt="Odlaw" />
+              <CharacterButton
+                data-character="odlaw"
+                onClick={handleSelection}
+                disabled={charactersFound.odlaw}
+              >
+                <Check src={CheckSvg} showCheck={charactersFound.odlaw} />
+                <CharacterImage src={Odlaw} isGray={charactersFound.odlaw} />
               </CharacterButton>
-              <CharacterButton data-character="whitebeard" onClick={handleSelection}>
-                <Image src={Whitebeard} />
+              <CharacterButton
+                data-character="whitebeard"
+                onClick={handleSelection}
+                disabled={charactersFound.whitebeard}
+              >
+                <Check src={CheckSvg} showCheck={charactersFound.whitebeard} />
+                <CharacterImage src={Whitebeard} isGray={charactersFound.whitebeard} />
               </CharacterButton>
             </CharacterButtons>
           </>
@@ -341,6 +368,13 @@ SceneViewport.propTypes = {
     height: PropTypes.number,
   }).isRequired,
   topBarHeight: PropTypes.number.isRequired,
+  charactersFound: PropTypes.shape({
+    waldo: PropTypes.bool,
+    wenda: PropTypes.bool,
+    odlaw: PropTypes.bool,
+    whitebeard: PropTypes.bool,
+  }).isRequired,
+  setCharactersFound: PropTypes.func.isRequired,
 };
 
 export default SceneViewport;
