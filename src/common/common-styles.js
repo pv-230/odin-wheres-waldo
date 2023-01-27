@@ -30,8 +30,6 @@ const Image = styled.img.attrs(() => ({ draggable: 'false' }))`
 
 const CharacterImage = styled(Image)`
   border-radius: 5px;
-  width: 100%;
-  height: 100%;
   background-color: cornflowerblue;
   filter: ${(props) => (props.isGray ? 'grayscale(100%)' : 'none')};
 `;
