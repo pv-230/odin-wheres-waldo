@@ -2,13 +2,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import { Header1, Header2, Text, Button, Image } from '../common/common-styles';
-import Waldo from '../images/characters/waldo-full.webp';
-import Wenda from '../images/characters/wenda-full.webp';
-import Odlaw from '../images/characters/odlaw-full.webp';
-import Whitebeard from '../images/characters/whitebeard-full.webp';
-import Beach from '../images/scenes/small/on-the-beach-small.webp';
-import Ski from '../images/scenes/small/ski-slopes-small.webp';
-import Sports from '../images/scenes/small/sports-stadium-small.webp';
+import { charactersFull, scenesCropped } from '../data/images';
 
 const StyledStartMenu = styled.div`
   display: flex;
@@ -81,23 +75,23 @@ function StartMenu({ scene, handleSceneSelection, startGame }) {
       <Text>How fast can you find these characters?</Text>
 
       <CharacterImages>
-        <img src={Waldo} alt="Waldo" />
-        <img src={Wenda} alt="Wenda" />
-        <img src={Odlaw} alt="Odlaw" />
-        <img src={Whitebeard} alt="Whitebeard" />
+        <img src={charactersFull.get('waldo')} alt="Waldo" />
+        <img src={charactersFull.get('wenda')} alt="Wenda" />
+        <img src={charactersFull.get('odlaw')} alt="Odlaw" />
+        <img src={charactersFull.get('whitebeard')} alt="Whitebeard" />
       </CharacterImages>
 
       <SceneSelection>
         <Header2>Choose a scene</Header2>
         <SceneButtons>
           <SceneButton data-scene="0" selected={scene.id === 0} onClick={handleSceneSelection}>
-            <Image src={Beach} alt="On the Beach" />
+            <Image src={scenesCropped.get('beach')} alt="On the Beach" />
           </SceneButton>
           <SceneButton data-scene="1" selected={scene.id === 1} onClick={handleSceneSelection}>
-            <Image src={Ski} alt="Ski Slopes" />
+            <Image src={scenesCropped.get('slopes')} alt="Ski Slopes" />
           </SceneButton>
           <SceneButton data-scene="2" selected={scene.id === 2} onClick={handleSceneSelection}>
-            <Image src={Sports} alt="Sports Stadium" />
+            <Image src={scenesCropped.get('stadium')} alt="Sports Stadium" />
           </SceneButton>
         </SceneButtons>
         <SceneTitle>{scene.title}</SceneTitle>

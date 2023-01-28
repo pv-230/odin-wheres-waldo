@@ -1,26 +1,24 @@
-import OnTheBeach from '../images/scenes/on-the-beach.webp';
-import SkiSlopes from '../images/scenes/ski-slopes.webp';
-import SportsStadium from '../images/scenes/sports-stadium.webp';
+import { scenesFull } from './images';
 
 const SCENES = [
   {
     id: 0,
     title: 'On the Beach',
-    image: OnTheBeach,
+    image: scenesFull.get('beach'),
     width: 3000,
     height: 1926,
   },
   {
     id: 1,
     title: 'Ski Slopes',
-    image: SkiSlopes,
+    image: scenesFull.get('slopes'),
     width: 3000,
     height: 1902,
   },
   {
     id: 2,
     title: 'Sports Stadium',
-    image: SportsStadium,
+    image: scenesFull.get('stadium'),
     width: 3000,
     height: 1899,
   },

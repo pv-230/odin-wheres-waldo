@@ -4,11 +4,7 @@ import PropTypes from 'prop-types';
 
 import SceneViewport from './scene-viewport';
 import { Text, Button, CharacterImage, Check } from '../common/common-styles';
-import Waldo from '../images/characters/small/waldo-small.webp';
-import Wenda from '../images/characters/small/wenda-small.webp';
-import Odlaw from '../images/characters/small/odlaw-small.webp';
-import Whitebeard from '../images/characters/small/whitebeard-small.webp';
-import CheckSvg from '../images/icons/check.svg';
+import { charactersCropped } from '../data/images';
 
 const TOP_BAR_HEIGHT = 175;
 
@@ -102,20 +98,32 @@ function Game({ scene, stopGame }) {
           </TimerBar>
           <CharacterImages>
             <CharacterImageWrapper>
-              <Check src={CheckSvg} showCheck={charactersFound.waldo} />
-              <CharacterImage src={Waldo} isGray={charactersFound.waldo} />
+              <Check showCheck={charactersFound.waldo} />
+              <CharacterImage
+                src={charactersCropped.get('waldo')}
+                isGray={charactersFound.waldo}
+              />
             </CharacterImageWrapper>
             <CharacterImageWrapper>
-              <Check src={CheckSvg} showCheck={charactersFound.wenda} />
-              <CharacterImage src={Wenda} isGray={charactersFound.wenda} />
+              <Check showCheck={charactersFound.wenda} />
+              <CharacterImage
+                src={charactersCropped.get('wenda')}
+                isGray={charactersFound.wenda}
+              />
             </CharacterImageWrapper>
             <CharacterImageWrapper>
-              <Check src={CheckSvg} showCheck={charactersFound.odlaw} />
-              <CharacterImage src={Odlaw} isGray={charactersFound.odlaw} />
+              <Check showCheck={charactersFound.odlaw} />
+              <CharacterImage
+                src={charactersCropped.get('odlaw')}
+                isGray={charactersFound.odlaw}
+              />
             </CharacterImageWrapper>
             <CharacterImageWrapper>
-              <Check src={CheckSvg} showCheck={charactersFound.whitebeard} />
-              <CharacterImage src={Whitebeard} isGray={charactersFound.whitebeard} />
+              <Check showCheck={charactersFound.whitebeard} />
+              <CharacterImage
+                src={charactersCropped.get('whitebeard')}
+                isGray={charactersFound.whitebeard}
+              />
             </CharacterImageWrapper>
           </CharacterImages>
         </TopBarContent>

@@ -3,15 +3,10 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { doc, getFirestore, getDoc } from 'firebase/firestore';
 
-import { Text, Button, Image, CharacterImage, Check } from '../common/common-styles';
-import { db } from '../firebase';
 import SelectionStatus from './selection-status';
-import Waldo from '../images/characters/small/waldo-small.webp';
-import Wenda from '../images/characters/small/wenda-small.webp';
-import Odlaw from '../images/characters/small/odlaw-small.webp';
-import Whitebeard from '../images/characters/small/whitebeard-small.webp';
-import CheckSvg from '../images/icons/check.svg';
-import MarkerSvg from '../images/icons/marker.svg';
+import { db } from '../firebase';
+import { Text, Button, Image, CharacterImage, Check } from '../common/common-styles';
+import { charactersCropped, icons } from '../data/images';
 
 const CHAR_SELECTION_WIDTH = 300;
 const CHAR_SELECTION_HEIGHT = 115;
@@ -93,7 +88,7 @@ const TargetBox = styled.div`
 const Marker = styled.div`
   width: ${MARKER_SIZE}px;
   height: ${MARKER_SIZE}px;
-  background-image: url(${MarkerSvg});
+  background-image: url(${icons.get('marker')});
   position: absolute;
   top: ${(props) => props.topVal}px;
   left: ${(props) => props.leftVal}px;
@@ -348,32 +343,44 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
                 onClick={handleSelection}
                 disabled={charactersFound.waldo}
               >
-                <Check src={CheckSvg} showCheck={charactersFound.waldo} />
-                <CharacterImage src={Waldo} isGray={charactersFound.waldo} />
+                <Check showCheck={charactersFound.waldo} />
+                <CharacterImage
+                  src={charactersCropped.get('waldo')}
+                  isGray={charactersFound.waldo}
+                />
               </CharacterButton>
               <CharacterButton
                 data-character="wenda"
                 onClick={handleSelection}
                 disabled={charactersFound.wenda}
               >
-                <Check src={CheckSvg} showCheck={charactersFound.wenda} />
-                <CharacterImage src={Wenda} isGray={charactersFound.wenda} />
+                <Check showCheck={charactersFound.wenda} />
+                <CharacterImage
+                  src={charactersCropped.get('wenda')}
+                  isGray={charactersFound.wenda}
+                />
               </CharacterButton>
               <CharacterButton
                 data-character="odlaw"
                 onClick={handleSelection}
                 disabled={charactersFound.odlaw}
               >
-                <Check src={CheckSvg} showCheck={charactersFound.odlaw} />
-                <CharacterImage src={Odlaw} isGray={charactersFound.odlaw} />
+                <Check showCheck={charactersFound.odlaw} />
+                <CharacterImage
+                  src={charactersCropped.get('odlaw')}
+                  isGray={charactersFound.odlaw}
+                />
               </CharacterButton>
               <CharacterButton
                 data-character="whitebeard"
                 onClick={handleSelection}
                 disabled={charactersFound.whitebeard}
               >
-                <Check src={CheckSvg} showCheck={charactersFound.whitebeard} />
-                <CharacterImage src={Whitebeard} isGray={charactersFound.whitebeard} />
+                <Check showCheck={charactersFound.whitebeard} />
+                <CharacterImage
+                  src={charactersCropped.get('whitebeard')}
+                  isGray={charactersFound.whitebeard}
+                />
               </CharacterButton>
             </CharacterButtons>
           </>

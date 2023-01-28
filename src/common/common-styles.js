@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { icons } from '../data/images';
 
 const Header1 = styled.h1`
   margin: 0;
@@ -34,7 +35,7 @@ const CharacterImage = styled(Image)`
   filter: ${(props) => (props.isGray ? 'grayscale(100%)' : 'none')};
 `;
 
-const Check = styled(Image)`
+const Check = styled(Image).attrs(() => ({ src: icons.get('check') }))`
   position: absolute;
   display: ${(props) => (props.showCheck ? 'block' : 'none')};
   z-index: 1;
