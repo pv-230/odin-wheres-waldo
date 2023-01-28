@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { doc, getFirestore, getDoc } from 'firebase/firestore';
 
-import { Text, Button, CharacterImage, Check } from '../common/common-styles';
+import { Text, Button, Image, CharacterImage, Check } from '../common/common-styles';
 import { db } from '../firebase';
 import SelectionStatus from './selection-status';
 import Waldo from '../images/characters/small/waldo-small.webp';
@@ -11,10 +11,12 @@ import Wenda from '../images/characters/small/wenda-small.webp';
 import Odlaw from '../images/characters/small/odlaw-small.webp';
 import Whitebeard from '../images/characters/small/whitebeard-small.webp';
 import CheckSvg from '../images/icons/check.svg';
+import MarkerSvg from '../images/icons/marker.svg';
 
 const CHAR_SELECTION_WIDTH = 300;
 const CHAR_SELECTION_HEIGHT = 115;
 const TARGET_BOX_SIZE = 100;
+const MARKER_SIZE = 128;
 const FIRESTORE = getFirestore(db);
 
 const StyledSceneViewport = styled.div`
@@ -27,15 +29,21 @@ const StyledSceneViewport = styled.div`
   position: relative;
 `;
 
-const SceneImage = styled.img.attrs(({ translateCoords, scaleVal }) => ({
+const SceneWrapper = styled.div.attrs(({ translateCoords, scaleVal }) => ({
   style: {
     translate: `${translateCoords.x}px ${translateCoords.y}px`,
     scale: `${scaleVal}`,
   },
 }))`
+  width: ${(props) => props.sceneWidth}px;
+  height: ${(props) => props.sceneHeight}px;
   cursor: ${(props) => (props.isPanning ? 'grab' : 'pointer')};
-  width: ${(props) => props.sceneWidth};
-  height: ${(props) => props.sceneHeight};
+  position: relative;
+`;
+
+const SceneImage = styled(Image)`
+  width: ${(props) => props.sceneWidth}px;
+  height: ${(props) => props.sceneHeight}px;
 `;
 
 const CharacterSelectionBox = styled.div`
@@ -82,6 +90,15 @@ const TargetBox = styled.div`
   left: ${(props) => props.leftVal}px;
 `;
 
+const Marker = styled.div`
+  width: ${MARKER_SIZE}px;
+  height: ${MARKER_SIZE}px;
+  background-image: url(${MarkerSvg});
+  position: absolute;
+  top: ${(props) => props.topVal}px;
+  left: ${(props) => props.leftVal}px;
+`;
+
 //-------------------------------------------------------------------------------------------------
 
 function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFound }) {
@@ -103,6 +120,9 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
   const [showSpinner, setShowSpinner] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState('');
+
+  // Used for displaying markers over characters that have been found
+  const [markers, setMarkers] = useState([]);
 
   // Ref used for initial image scaling
   const sceneRef = useRef(null);
@@ -275,6 +295,14 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
     ) {
       setIsCorrect(true);
       setCharactersFound({ ...charactersFound, [characterDocName]: true });
+      setMarkers([
+        ...markers,
+        {
+          character: characterDocName,
+          x: coordsField[0] - MARKER_SIZE / 2,
+          y: coordsField[1] - MARKER_SIZE - 8,
+        },
+      ]);
     } else {
       setIsCorrect(false);
     }
@@ -282,20 +310,23 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
 
   return (
     <StyledSceneViewport topBarHeight={topBarHeight} ref={sceneRef}>
-      <SceneImage
-        src={scene.image}
-        alt={scene.title}
+      <SceneWrapper
+        sceneWidth={scene.width}
+        sceneHeight={scene.height}
         isPanning={isPanning}
         translateCoords={translateCoords}
         scaleVal={scaleVal}
-        sceneWidth={scene.width}
-        sceneHeight={scene.height}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onWheel={handleWheel}
         onClick={handleClick}
-      />
+      >
+        <SceneImage src={scene.image} sceneWidth={scene.width} sceneHeight={scene.height} />
+        {markers.map((marker) => (
+          <Marker key={marker.character} leftVal={marker.x} topVal={marker.y} />
+        ))}
+      </SceneWrapper>
 
       <CharacterSelectionBox
         showSelectionBox={showSelectionBox}
