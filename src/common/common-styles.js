@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { icons } from '../data/images';
+import { icons } from '../data/image-maps';
 
 const Header1 = styled.h1`
   margin: 0;
@@ -41,4 +41,22 @@ const Check = styled(Image).attrs(() => ({ src: icons.get('check') }))`
   z-index: 1;
 `;
 
-export { Header1, Header2, Text, Button, Image, CharacterImage, Check };
+const Spinner = styled.div`
+  width: 64px;
+  height: 64px;
+  border: 5px solid var(--light-color);
+  border-radius: 50%;
+  border-bottom: 5px solid cornflowerblue;
+  animation: 500ms linear infinite spinner;
+
+  @keyframes spinner {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+export { Header1, Header2, Text, Button, Image, CharacterImage, Check, Spinner };
