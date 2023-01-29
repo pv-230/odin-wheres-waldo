@@ -1,29 +1,29 @@
-import { scenesFull } from './images';
+import { scenesFull } from './image-maps';
 
-const SCENES = [
+const scenes = [
   {
     id: 0,
     title: 'On the Beach',
-    image: scenesFull.get('beach'),
+    imageSrc: scenesFull.get('beach'),
     width: 3000,
     height: 1926,
   },
   {
     id: 1,
     title: 'Ski Slopes',
-    image: scenesFull.get('slopes'),
+    imageSrc: scenesFull.get('slopes'),
     width: 3000,
     height: 1902,
   },
   {
     id: 2,
     title: 'Sports Stadium',
-    image: scenesFull.get('stadium'),
+    imageSrc: scenesFull.get('stadium'),
     width: 3000,
     height: 1899,
   },
 ];
 
-Object.freeze(SCENES);
+Object.freeze(scenes);
 
-export default SCENES;
+export default scenes;

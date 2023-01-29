@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import { Header1, Header2, Text, Button, Image } from '../common/common-styles';
-import { charactersFull, scenesCropped } from '../data/images';
+import { charactersFull, scenesCropped } from '../data/image-maps';
 
 const StyledStartMenu = styled.div`
   display: flex;

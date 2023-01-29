@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import SceneViewport from './scene-viewport';
 import { Text, Button, CharacterImage, Check } from '../common/common-styles';
-import { charactersCropped } from '../data/images';
+import { charactersCropped } from '../data/image-maps';
 
 const TOP_BAR_HEIGHT = 175;
 

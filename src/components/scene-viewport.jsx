@@ -6,7 +6,7 @@ import { doc, getFirestore, getDoc } from 'firebase/firestore';
 import SelectionStatus from './selection-status';
 import { db } from '../firebase';
 import { Text, Button, Image, CharacterImage, Check } from '../common/common-styles';
-import { charactersCropped, icons } from '../data/images';
+import { charactersCropped, icons } from '../data/image-maps';
 
 const CHAR_SELECTION_WIDTH = 300;
 const CHAR_SELECTION_HEIGHT = 115;
@@ -317,7 +317,7 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
         onWheel={handleWheel}
         onClick={handleClick}
       >
-        <SceneImage src={scene.image} sceneWidth={scene.width} sceneHeight={scene.height} />
+        <SceneImage src={scene.imageSrc} sceneWidth={scene.width} sceneHeight={scene.height} />
         {markers.map((marker) => (
           <Marker key={marker.character} leftVal={marker.x} topVal={marker.y} />
         ))}
@@ -401,7 +401,7 @@ SceneViewport.propTypes = {
   scene: PropTypes.shape({
     id: PropTypes.number,
     title: PropTypes.string,
-    image: PropTypes.string,
+    imageSrc: PropTypes.string,
     width: PropTypes.number,
     height: PropTypes.number,
   }).isRequired,
