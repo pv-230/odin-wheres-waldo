@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
@@ -79,6 +79,9 @@ const CharacterImageWrapper = styled.div`
 //-------------------------------------------------------------------------------------------------
 
 function Game({ scene, stopGame }) {
+  const [gameOver, setGameOver] = useState(false);
+  const [seconds, setSeconds] = useState(0);
+  const [minutes, setMinutes] = useState(0);
   const [charactersFound, setCharactersFound] = useState({
     waldo: false,
     wenda: false,
@@ -86,13 +89,48 @@ function Game({ scene, stopGame }) {
     whitebeard: false,
   });
 
+  /**
+   * Starts a timer when the game starts.
+   */
+  useEffect(() => {
+    var timer;
+
+    if (!gameOver) {
+      timer = setTimeout(() => {
+        let newSeconds = seconds + 1;
+        if (newSeconds === 60) {
+          newSeconds = 0;
+          setMinutes((prevMinutes) => prevMinutes + 1);
+        }
+        setSeconds(newSeconds);
+      }, 1000);
+    } else {
+      clearTimeout(timer);
+    }
+
+    return () => clearTimeout(timer);
+  }, [gameOver, seconds]);
+
+  /**
+   * Stops the game when all characters are found.
+   */
+  useEffect(() => {
+    const foundValues = Object.values(charactersFound);
+    for (let i = 0; i < foundValues.length; i++) {
+      if (!foundValues[i]) return;
+    }
+    setGameOver(true);
+  }, [charactersFound]);
+
   return (
     <StyledGame>
       <TopBar>
         <TopBarContent>
           <TimerBar>
             <Timer>
-              <TimerText>00:00</TimerText>
+              <TimerText>
+                {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
+              </TimerText>
             </Timer>
             <StopButton onClick={stopGame}>Quit</StopButton>
           </TimerBar>
