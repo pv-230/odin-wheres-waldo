@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import 'normalize.css';
 
 import GlobalStyle from '../common/global-style';
-import { Spinner } from '../common/common-styles';
+import { Text, Spinner } from '../common/common-styles';
 import StartMenu from './start-menu';
 import Game from './game';
 import scenes from '../data/scenes';
@@ -25,29 +25,40 @@ const StyledApp = styled.div`
   background-color: var(--light-color);
 `;
 
+const LoadingWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+`;
+
+const LoadingText = styled(Text)`
+  font-size: 2rem;
+`;
+
 //-------------------------------------------------------------------------------------------------
 
 function App() {
+  var content;
   const [gameLoaded, setGameLoaded] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [scene, setScene] = useState(scenes[0]);
+  const [loadingText, setLoadingText] = useState('Loading');
 
   /**
-   *
+   * Preloads all images when the app first mounts.
    */
   useEffect(() => {
-    const imageMaps = [charactersFull, charactersCropped, scenesFull, scenesCropped, icons];
-    const imageSources = [];
+    // Arrays containg the URLs of images
+    const charactersFullSources = Array.from(charactersFull).map((element) => element[1]);
+    const charactersCroppedSources = Array.from(charactersCropped).map((element) => element[1]);
+    const scenesFullSources = Array.from(scenesFull).map((element) => element[1]);
+    const scenesCroppedSources = Array.from(scenesCropped).map((element) => element[1]);
+    const iconsSources = Array.from(icons).map((element) => element[1]);
 
-    // Extracts the image sources from the image maps
-    imageMaps.forEach((imageMap) => {
-      const imageArray = Array.from(imageMap);
-      imageArray.forEach((image) => imageSources.push(image[1]));
-    });
-
-    // Waits for all images to fire a load event
+    // IIFE that creates image instances to load
     (async () => {
-      const imagePromises = imageSources.map(
+      const iconsPromises = iconsSources.map(
         (imageSource) =>
           new Promise((resolve) => {
             const image = new Image();
@@ -56,8 +67,55 @@ function App() {
           })
       );
 
-      await Promise.all(imagePromises);
+      const charactersCroppedPromises = charactersCroppedSources.map(
+        (imageSource) =>
+          new Promise((resolve) => {
+            const image = new Image();
+            image.src = imageSource;
+            image.onload = () => resolve(imageSource);
+          })
+      );
+
+      const scenesCroppedPromises = scenesCroppedSources.map(
+        (imageSource) =>
+          new Promise((resolve) => {
+            const image = new Image();
+            image.src = imageSource;
+            image.onload = () => resolve(imageSource);
+          })
+      );
+
+      const charactersFullPromises = charactersFullSources.map(
+        (imageSource) =>
+          new Promise((resolve) => {
+            const image = new Image();
+            image.src = imageSource;
+            image.onload = () => resolve(imageSource);
+          })
+      );
+
+      const scenesFullPromises = scenesFullSources.map(
+        (imageSource) =>
+          new Promise((resolve) => {
+            const image = new Image();
+            image.src = imageSource;
+            image.onload = () => resolve(imageSource);
+          })
+      );
+
+      // Displays loading status
+      setLoadingText('Loading icons');
+      await Promise.all(iconsPromises);
+      setLoadingText('Loading cropped character images');
+      await Promise.all(charactersCroppedPromises);
+      setLoadingText('Loading cropped scene images');
+      await Promise.all(scenesCroppedPromises);
+      setLoadingText('Loading full character images');
+      await Promise.all(charactersFullPromises);
+      setLoadingText('Loading full scene images');
+      await Promise.all(scenesFullPromises);
       setGameLoaded(true);
+      setLoadingText('Loading complete');
     })();
   }, []);
 
@@ -84,7 +142,7 @@ function App() {
     setScene(scenes[sceneVal]);
   }
 
-  let content;
+  // Shows a spinner if assets not finished loading
   if (gameLoaded) {
     content = gameStarted ? (
       <Game scene={scene} stopGame={stopGame} />
@@ -92,7 +150,12 @@ function App() {
       <StartMenu scene={scene} handleSceneSelection={handleSceneSelection} startGame={startGame} />
     );
   } else {
-    content = <Spinner />;
+    content = (
+      <LoadingWrapper>
+        <Spinner />
+        <LoadingText>{loadingText}</LoadingText>
+      </LoadingWrapper>
+    );
   }
 
   return (
