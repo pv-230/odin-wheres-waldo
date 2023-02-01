@@ -14,6 +14,7 @@ const StyledGame = styled.div`
   width: 100%;
   height: 100%;
   background-color: var(--dark-color);
+  position: relative;
 `;
 
 const TopBar = styled.div`
@@ -76,9 +77,77 @@ const CharacterImageWrapper = styled.div`
   position: relative;
 `;
 
+const EndDialog = styled.div`
+  display: ${(props) => (props.showEndDialog ? 'flex' : 'none')};
+  flex-direction: column;
+  width: 320px;
+  height: 250px;
+  position: absolute;
+  top: calc(50vh - 125px);
+  left: calc(50vw - 160px);
+  background-color: var(--light-color);
+`;
+
+const DialogHeader = styled.div`
+  display: flex;
+  justify-content: center;
+  background-color: crimson;
+  width: 100%;
+  padding: 10px 0;
+  border-left: 1px solid var(--dark-color);
+  border-top: 1px solid var(--dark-color);
+  border-right: 1px solid var(--dark-color);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+`;
+
+const DialogContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  gap: 20px;
+  height: 100%;
+  border-left: 1px solid var(--dark-color);
+  border-bottom: 1px solid var(--dark-color);
+  border-right: 1px solid var(--dark-color);
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+`;
+
+const ScoreWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+`;
+
+const SubmitButton = styled(Button)`
+  background-color: greenyellow;
+
+  &:hover {
+    background-color: lawngreen;
+  }
+
+  &:active {
+    background-color: greenyellow;
+  }
+`;
+
 //-------------------------------------------------------------------------------------------------
 
 function Game({ scene, stopGame }) {
+  var secondsText = 'second';
+  var minutesText = 'minute';
+
   const [gameOver, setGameOver] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [minutes, setMinutes] = useState(0);
@@ -121,6 +190,14 @@ function Game({ scene, stopGame }) {
     }
     setGameOver(true);
   }, [charactersFound]);
+
+  if (seconds === 0 || seconds > 1) {
+    secondsText = 'seconds';
+  }
+
+  if (minutes > 1) {
+    minutesText = 'minutes';
+  }
 
   return (
     <StyledGame>
@@ -172,6 +249,26 @@ function Game({ scene, stopGame }) {
         charactersFound={charactersFound}
         setCharactersFound={setCharactersFound}
       />
+      <EndDialog showEndDialog={gameOver}>
+        <DialogHeader>
+          <Text style={{ fontSize: '2rem', color: 'var(--light-color)' }}>Congratulations!</Text>
+        </DialogHeader>
+        <DialogContent>
+          <ScoreWrapper>
+            <Text style={{ fontSize: '1.2rem' }}>You found all the characters in</Text>
+            <Text style={{ fontSize: '1.2rem' }}>
+              {minutes > 0 ? `${minutes} ${minutesText}` : null} {seconds} {secondsText}
+            </Text>
+          </ScoreWrapper>
+          <Text style={{ textAlign: 'center' }}>
+            You can anonymously submit your time score to the leaderboards.
+          </Text>
+          <ButtonWrapper>
+            <SubmitButton>Submit</SubmitButton>
+            <StopButton onClick={stopGame}>Main Menu</StopButton>
+          </ButtonWrapper>
+        </DialogContent>
+      </EndDialog>
     </StyledGame>
   );
 }
