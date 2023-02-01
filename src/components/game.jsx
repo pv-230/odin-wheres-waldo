@@ -248,6 +248,7 @@ function Game({ scene, stopGame }) {
         topBarHeight={TOP_BAR_HEIGHT}
         charactersFound={charactersFound}
         setCharactersFound={setCharactersFound}
+        isDisabled={gameOver}
       />
       <EndDialog showEndDialog={gameOver}>
         <DialogHeader>

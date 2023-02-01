@@ -22,6 +22,7 @@ const StyledSceneViewport = styled.div`
   height: ${(props) => `calc(100vh - ${props.topBarHeight}px)`};
   overflow: hidden;
   position: relative;
+  filter: ${(props) => (props.isDisabled ? 'grayscale(75%)' : 'none')};
 `;
 
 const SceneWrapper = styled.div.attrs(({ translateCoords, scaleVal }) => ({
@@ -32,7 +33,17 @@ const SceneWrapper = styled.div.attrs(({ translateCoords, scaleVal }) => ({
 }))`
   width: ${(props) => props.sceneWidth}px;
   height: ${(props) => props.sceneHeight}px;
-  cursor: ${(props) => (props.isPanning ? 'grab' : 'pointer')};
+  cursor: ${(props) => {
+    var cursorValue = 'pointer';
+
+    if (props.isDisabled) {
+      cursorValue = 'default';
+    } else if (props.isPanning) {
+      cursorValue = 'grab';
+    }
+
+    return cursorValue;
+  }};
   position: relative;
 `;
 
@@ -96,7 +107,7 @@ const Marker = styled.div`
 
 //-------------------------------------------------------------------------------------------------
 
-function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFound }) {
+function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFound, isDisabled }) {
   // Panning states
   const [isPanning, setIsPanning] = useState(false);
   const [translateCoords, setTranslateCoords] = useState({ x: 0, y: 0 });
@@ -154,11 +165,23 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
   }, [scene.height]);
 
   /**
+   * Removes the character selection box when the game ends.
+   */
+  useEffect(() => {
+    if (isDisabled) {
+      setShowSelectionBox(false);
+      setShowTargetBox(false);
+      setHasSelected(false);
+    }
+  }, [isDisabled]);
+
+  /**
    * Event handler for starting image panning.
    * @param {Event} e
    */
   function handleMouseDown(e) {
     e.preventDefault(); // Prevent image dragging
+    if (isDisabled) return;
     setIsPanning(true);
     setOldTranslateCoords(translateCoords);
     setShowSelectionBox(false);
@@ -190,6 +213,7 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
    * Event handler for zooming in or out.
    */
   function handleWheel(e) {
+    if (isDisabled) return;
     const SCALE_STEP = 0.1;
     const scaleChange = e.deltaY > 0 ? -SCALE_STEP : SCALE_STEP;
     setScaleVal((prevScaleValue) => prevScaleValue + scaleChange);
@@ -203,6 +227,8 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
    * @param {Event} e
    */
   function handleClick(e) {
+    if (isDisabled) return;
+
     // Prevents showing the selection window if user has panned
     if (translateCoords.x !== oldTranslateCoords.x && translateCoords.y !== oldTranslateCoords.y) {
       return;
@@ -304,7 +330,7 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
   }
 
   return (
-    <StyledSceneViewport topBarHeight={topBarHeight} ref={sceneRef}>
+    <StyledSceneViewport topBarHeight={topBarHeight} ref={sceneRef} isDisabled={isDisabled}>
       <SceneWrapper
         sceneWidth={scene.width}
         sceneHeight={scene.height}
@@ -316,6 +342,7 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
         onMouseUp={handleMouseUp}
         onWheel={handleWheel}
         onClick={handleClick}
+        isDisabled={isDisabled}
       >
         <SceneImage src={scene.imageSrc} sceneWidth={scene.width} sceneHeight={scene.height} />
         {markers.map((marker) => (
@@ -413,6 +440,7 @@ SceneViewport.propTypes = {
     whitebeard: PropTypes.bool,
   }).isRequired,
   setCharactersFound: PropTypes.func.isRequired,
+  isDisabled: PropTypes.bool.isRequired,
 };
 
 export default SceneViewport;
