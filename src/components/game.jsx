@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import SceneViewport from './scene-viewport';
-import { Text, Button, CharacterImage, Check } from '../common/common-styles';
+import EndDialog from './end-dialog';
+import { Text, StopButton, CharacterImage, Check } from '../common/common-styles';
 import { charactersCropped } from '../data/image-maps';
 
 const TOP_BAR_HEIGHT = 175;
@@ -52,19 +53,6 @@ const TimerText = styled(Text)`
   user-select: none;
 `;
 
-const StopButton = styled(Button)`
-  &:hover {
-    background-color: orangered;
-  }
-
-  &:active {
-    background-color: tomato;
-  }
-
-  background-color: tomato;
-  height: 100%;
-`;
-
 const CharacterImages = styled.div`
   display: flex;
   justify-content: space-between;
@@ -77,77 +65,9 @@ const CharacterImageWrapper = styled.div`
   position: relative;
 `;
 
-const EndDialog = styled.div`
-  display: ${(props) => (props.showEndDialog ? 'flex' : 'none')};
-  flex-direction: column;
-  width: 320px;
-  height: 250px;
-  position: absolute;
-  top: calc(50vh - 125px);
-  left: calc(50vw - 160px);
-  background-color: var(--light-color);
-`;
-
-const DialogHeader = styled.div`
-  display: flex;
-  justify-content: center;
-  background-color: crimson;
-  width: 100%;
-  padding: 10px 0;
-  border-left: 1px solid var(--dark-color);
-  border-top: 1px solid var(--dark-color);
-  border-right: 1px solid var(--dark-color);
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-`;
-
-const DialogContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  gap: 20px;
-  height: 100%;
-  border-left: 1px solid var(--dark-color);
-  border-bottom: 1px solid var(--dark-color);
-  border-right: 1px solid var(--dark-color);
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-`;
-
-const ScoreWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-`;
-
-const SubmitButton = styled(Button)`
-  background-color: greenyellow;
-
-  &:hover {
-    background-color: lawngreen;
-  }
-
-  &:active {
-    background-color: greenyellow;
-  }
-`;
-
 //-------------------------------------------------------------------------------------------------
 
 function Game({ scene, stopGame }) {
-  var secondsText = 'second';
-  var minutesText = 'minute';
-
   const [gameOver, setGameOver] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [minutes, setMinutes] = useState(0);
@@ -191,18 +111,11 @@ function Game({ scene, stopGame }) {
     setGameOver(true);
   }, [charactersFound]);
 
-  if (seconds === 0 || seconds > 1) {
-    secondsText = 'seconds';
-  }
-
-  if (minutes > 1) {
-    minutesText = 'minutes';
-  }
-
   return (
     <StyledGame>
       <TopBar>
         <TopBarContent>
+          {/* Game timer and quit button */}
           <TimerBar>
             <Timer>
               <TimerText>
@@ -211,6 +124,8 @@ function Game({ scene, stopGame }) {
             </Timer>
             <StopButton onClick={stopGame}>Quit</StopButton>
           </TimerBar>
+
+          {/* Character statuses */}
           <CharacterImages>
             <CharacterImageWrapper>
               <Check showCheck={charactersFound.waldo} />
@@ -243,6 +158,8 @@ function Game({ scene, stopGame }) {
           </CharacterImages>
         </TopBarContent>
       </TopBar>
+
+      {/* Game scene area */}
       <SceneViewport
         scene={scene}
         topBarHeight={TOP_BAR_HEIGHT}
@@ -250,26 +167,9 @@ function Game({ scene, stopGame }) {
         setCharactersFound={setCharactersFound}
         isDisabled={gameOver}
       />
-      <EndDialog showEndDialog={gameOver}>
-        <DialogHeader>
-          <Text style={{ fontSize: '2rem', color: 'var(--light-color)' }}>Congratulations!</Text>
-        </DialogHeader>
-        <DialogContent>
-          <ScoreWrapper>
-            <Text style={{ fontSize: '1.2rem' }}>You found all the characters in</Text>
-            <Text style={{ fontSize: '1.2rem' }}>
-              {minutes > 0 ? `${minutes} ${minutesText}` : null} {seconds} {secondsText}
-            </Text>
-          </ScoreWrapper>
-          <Text style={{ textAlign: 'center' }}>
-            You can anonymously submit your time score to the leaderboards.
-          </Text>
-          <ButtonWrapper>
-            <SubmitButton>Submit</SubmitButton>
-            <StopButton onClick={stopGame}>Main Menu</StopButton>
-          </ButtonWrapper>
-        </DialogContent>
-      </EndDialog>
+
+      {/* Dialog to allow user to submit game score */}
+      <EndDialog gameOver={gameOver} seconds={seconds} minutes={minutes} stopGame={stopGame} />
     </StyledGame>
   );
 }

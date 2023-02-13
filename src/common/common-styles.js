@@ -59,4 +59,17 @@ const Spinner = styled.div`
   }
 `;
 
-export { Header1, Header2, Text, Button, Image, CharacterImage, Check, Spinner };
+const StopButton = styled(Button)`
+  &:hover {
+    background-color: orangered;
+  }
+
+  &:active {
+    background-color: tomato;
+  }
+
+  background-color: tomato;
+  height: 100%;
+`;
+
+export { Header1, Header2, Text, Button, Image, CharacterImage, Check, Spinner, StopButton };
