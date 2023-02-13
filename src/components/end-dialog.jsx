@@ -1,15 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
-import { Text, Button, StopButton } from '../common/common-styles';
+import { Text, Button, StopButton, Spinner } from '../common/common-styles';
 import db from '../firebase';
 
 const StyledEndDialog = styled.div`
   display: ${(props) => (props.showEndDialog ? 'flex' : 'none')};
   flex-direction: column;
   width: 320px;
-  height: 300px;
   position: absolute;
   top: calc(50vh - 150px);
   left: calc(50vw - 160px);
@@ -49,6 +49,7 @@ const NameInput = styled.input.attrs({
   placeholder: 'Enter your name',
   maxLength: '20',
 })`
+  display: ${(props) => (props.showNameInput ? 'initial' : 'none')};
   width: 20ch;
 `;
 
@@ -67,6 +68,9 @@ const ButtonWrapper = styled.div`
 `;
 
 const SubmitButton = styled(Button)`
+  display: flex;
+  justify-content: center;
+  width: 137px;
   background-color: ${(props) => (props.disabled ? 'lightgray' : 'greenyellow')};
   cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
 
@@ -79,8 +83,27 @@ const SubmitButton = styled(Button)`
   }
 `;
 
-function EndDialog({ gameOver, seconds, minutes, stopGame }) {
+const ButtonSpinner = styled(Spinner)`
+  width: 16px;
+  height: 16px;
+  border: 3px solid var(--light-color);
+  border-bottom: 3px solid cornflowerblue;
+`;
+
+//-------------------------------------------------------------------------------------------------
+
+function EndDialog({ scene, gameOver, seconds, minutes, stopGame }) {
+  // Input states
+  const [dynamicDialogText, setDynamicDialogText] = useState(
+    'Submit your score to the leaderboard!'
+  );
+  const [showNameInput, setShowNameInput] = useState(true);
   const [nameInputValue, setNameInputValue] = useState('');
+
+  // Button states
+  const [submitButtonText, setSubmitButtonText] = useState('Submit');
+  const [submitIsDisabled, setSubmitIsDisabled] = useState(true);
+  const [showSpinner, setShowSpinner] = useState(false);
 
   var secondsText = 'second';
   var minutesText = 'minute';
@@ -94,11 +117,55 @@ function EndDialog({ gameOver, seconds, minutes, stopGame }) {
   }
 
   /**
-   * Event handler for changes to the name input field.
-   * @param {Event} e
+   * Disables the submit button if name input is empty.
    */
-  function handleChange(e) {
-    setNameInputValue(e.target.value);
+  useEffect(() => {
+    if (nameInputValue) {
+      setSubmitIsDisabled(false);
+    } else {
+      setSubmitIsDisabled(true);
+    }
+  }, [nameInputValue]);
+
+  /**
+   * Event handler for submitting user scores.
+   */
+  async function handleSubmit() {
+    var sceneDocName;
+
+    // Sets the appropriate scene name that is expected in the database
+    if (scene.id === 0) {
+      sceneDocName = 'beach';
+    } else if (scene.id === 1) {
+      sceneDocName = 'slopes';
+    } else if (scene.id === 2) {
+      sceneDocName = 'stadium';
+    } else {
+      throw new Error('handleSelection(): Invalid scene ID');
+    }
+
+    const userCollection = collection(db, 'leaderboard', sceneDocName, 'users');
+
+    try {
+      setShowSpinner(true);
+      setSubmitIsDisabled(true);
+
+      await addDoc(userCollection, {
+        name: nameInputValue,
+        seconds,
+        minutes,
+        timestamp: serverTimestamp(),
+      });
+
+      setShowSpinner(false);
+      setShowNameInput(false);
+      setDynamicDialogText('Your score has been submitted.');
+      setSubmitButtonText('Submitted');
+    } catch (e) {
+      setShowSpinner(false);
+      setSubmitIsDisabled(false);
+      setDynamicDialogText(e.message);
+    }
   }
 
   return (
@@ -113,10 +180,16 @@ function EndDialog({ gameOver, seconds, minutes, stopGame }) {
             {minutes > 0 ? `${minutes} ${minutesText}` : null} {seconds} {secondsText}
           </Text>
         </ScoreWrapper>
-        <Text style={{ textAlign: 'center' }}>Submit your score to the leaderboards!</Text>
-        <NameInput value={nameInputValue} onChange={(e) => handleChange(e)} />
+        <Text style={{ textAlign: 'center' }}>{dynamicDialogText}</Text>
+        <NameInput
+          value={nameInputValue}
+          showNameInput={showNameInput}
+          onChange={(e) => setNameInputValue(e.target.value)}
+        />
         <ButtonWrapper>
-          <SubmitButton disabled={!nameInputValue}>Submit</SubmitButton>
+          <SubmitButton disabled={submitIsDisabled} onClick={handleSubmit}>
+            {showSpinner ? <ButtonSpinner /> : submitButtonText}
+          </SubmitButton>
           <StopButton onClick={stopGame}>Main Menu</StopButton>
         </ButtonWrapper>
       </DialogContent>
@@ -125,6 +198,13 @@ function EndDialog({ gameOver, seconds, minutes, stopGame }) {
 }
 
 EndDialog.propTypes = {
+  scene: PropTypes.shape({
+    id: PropTypes.number,
+    title: PropTypes.string,
+    imageSrc: PropTypes.string,
+    width: PropTypes.number,
+    height: PropTypes.number,
+  }).isRequired,
   gameOver: PropTypes.bool.isRequired,
   seconds: PropTypes.number.isRequired,
   minutes: PropTypes.number.isRequired,

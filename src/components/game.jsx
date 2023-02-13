@@ -169,7 +169,13 @@ function Game({ scene, stopGame }) {
       />
 
       {/* Dialog to allow user to submit game score */}
-      <EndDialog gameOver={gameOver} seconds={seconds} minutes={minutes} stopGame={stopGame} />
+      <EndDialog
+        scene={scene}
+        gameOver={gameOver}
+        seconds={seconds}
+        minutes={minutes}
+        stopGame={stopGame}
+      />
     </StyledGame>
   );
 }
