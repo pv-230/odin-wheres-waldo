@@ -302,7 +302,7 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
 
     // Gets coordinates from database
     const characterDoc = doc(FIRESTORE, 'scenes', sceneDocName, 'characters', characterDocName);
-    const coordsField = await (await getDoc(characterDoc)).get('coords');
+    const coordsField = (await getDoc(characterDoc)).get('coords');
 
     setShowSpinner(false);
     setShowTargetBox(false);
