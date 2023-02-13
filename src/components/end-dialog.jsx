@@ -66,18 +66,21 @@ const ButtonWrapper = styled.div`
 `;
 
 const SubmitButton = styled(Button)`
-  background-color: greenyellow;
+  background-color: ${(props) => (props.disabled ? 'lightgray' : 'greenyellow')};
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
 
-  &:hover {
+  &:hover:not(:disabled) {
     background-color: lawngreen;
   }
 
-  &:active {
+  &:active:not(:disabled) {
     background-color: greenyellow;
   }
 `;
 
 function EndDialog({ gameOver, seconds, minutes, stopGame }) {
+  const [nameInputValue, setNameInputValue] = useState('');
+
   var secondsText = 'second';
   var minutesText = 'minute';
 
@@ -87,6 +90,14 @@ function EndDialog({ gameOver, seconds, minutes, stopGame }) {
 
   if (minutes > 1) {
     minutesText = 'minutes';
+  }
+
+  /**
+   * Event handler for changes to the name input field.
+   * @param {Event} e
+   */
+  function handleChange(e) {
+    setNameInputValue(e.target.value);
   }
 
   return (
@@ -102,9 +113,9 @@ function EndDialog({ gameOver, seconds, minutes, stopGame }) {
           </Text>
         </ScoreWrapper>
         <Text style={{ textAlign: 'center' }}>Submit your score to the leaderboards!</Text>
-        <NameInput />
+        <NameInput value={nameInputValue} onChange={(e) => handleChange(e)} />
         <ButtonWrapper>
-          <SubmitButton>Submit</SubmitButton>
+          <SubmitButton disabled={!nameInputValue}>Submit</SubmitButton>
           <StopButton onClick={stopGame}>Main Menu</StopButton>
         </ButtonWrapper>
       </DialogContent>
