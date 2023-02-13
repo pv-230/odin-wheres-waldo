@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import { Text, Button, StopButton } from '../common/common-styles';
+import db from '../firebase';
 
 const StyledEndDialog = styled.div`
   display: ${(props) => (props.showEndDialog ? 'flex' : 'none')};

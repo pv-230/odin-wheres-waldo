@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { doc, getFirestore, getDoc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 
 import SelectionStatus from './selection-status';
-import { db } from '../firebase';
+import db from '../firebase';
 import { Text, Button, Image, CharacterImage, Check } from '../common/common-styles';
 import { charactersCropped, icons } from '../data/image-maps';
 
@@ -12,7 +12,6 @@ const CHAR_SELECTION_WIDTH = 300;
 const CHAR_SELECTION_HEIGHT = 115;
 const TARGET_BOX_SIZE = 100;
 const MARKER_SIZE = 128;
-const FIRESTORE = getFirestore(db);
 
 const StyledSceneViewport = styled.div`
   display: flex;
@@ -301,7 +300,7 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
     setShowSpinner(true);
 
     // Gets coordinates from database
-    const characterDoc = doc(FIRESTORE, 'scenes', sceneDocName, 'characters', characterDocName);
+    const characterDoc = doc(db, 'scenes', sceneDocName, 'characters', characterDocName);
     const coordsField = (await getDoc(characterDoc)).get('coords');
 
     setShowSpinner(false);

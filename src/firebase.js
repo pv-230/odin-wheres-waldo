@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
 
 // Not necessary to hide Firebase API key
 const firebaseConfig = {
@@ -10,5 +11,7 @@ const firebaseConfig = {
   appId: '1:307823725310:web:78d27859dd70f0c9e1f3af',
 };
 
-// eslint-disable-next-line import/prefer-default-export
-export const db = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+export default db;
