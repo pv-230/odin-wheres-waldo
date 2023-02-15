@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
-import { Link } from 'react-router-dom';
 
 import GlobalStyle from '../common/global-style';
-import { Header1, Image, Button, Text, Spinner } from '../common/common-styles';
+import { Header1, Image, Button, Text, Spinner, StyledLink } from '../common/common-styles';
 import { scenesCropped } from '../data/image-maps';
 import scenes from '../data/scenes';
 import db from '../firebase';
@@ -134,6 +133,7 @@ const PageControls = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 10px;
   width: 100%;
 `;
 
@@ -141,6 +141,18 @@ const Buttons = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
+`;
+
+const MainMenuButton = styled(StyledLink)`
+  background-color: tomato;
+
+  &:hover {
+    background-color: orangered;
+  }
+
+  &:active {
+    background-color: tomato;
+  }
 `;
 
 //-------------------------------------------------------------------------------------------------
@@ -299,7 +311,7 @@ function Leaderboard() {
                   <Text>Page {scorePosition / 5 + 1}</Text>
                   <Buttons>
                     <Button onClick={decrementPage}>Prev</Button>
-                    <Link to="/">Back</Link>
+                    <MainMenuButton to="/">Main Menu</MainMenuButton>
                     <Button onClick={incrementPage}>Next</Button>
                   </Buttons>
                 </PageControls>

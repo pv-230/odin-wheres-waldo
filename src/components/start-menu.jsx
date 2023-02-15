@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 
-import { Header1, Header2, Text, Button, Image } from '../common/common-styles';
+import { Header1, Header2, Text, Button, Image, StyledLink } from '../common/common-styles';
 import { charactersFull, scenesCropped } from '../data/image-maps';
 
 const StyledStartMenu = styled.div`
@@ -57,7 +56,7 @@ const ActionButtons = styled.div`
   gap: 10px;
 `;
 
-const ActionButton = styled(Button)`
+const StartButton = styled(Button)`
   &:hover {
     background-color: greenyellow;
   }
@@ -67,20 +66,7 @@ const ActionButton = styled(Button)`
   }
 `;
 
-const StyledLink = styled(Link)`
-  background-color: var(--light-color);
-  color: var(--dark-color);
-  border: 2px solid var(--dark-color);
-  border-radius: 5px;
-  padding: 10px 20px;
-  text-transform: uppercase;
-  font-weight: bold;
-  text-decoration: none;
-
-  &:visited {
-    color: initial;
-  }
-
+const LeaderboardButton = styled(StyledLink)`
   &:hover {
     background-color: greenyellow;
   }
@@ -122,10 +108,10 @@ function StartMenu({ scene, handleSceneSelection, startGame }) {
       </SceneSelection>
 
       <ActionButtons>
-        <ActionButton type="button" onClick={startGame}>
+        <StartButton type="button" onClick={startGame}>
           Start
-        </ActionButton>
-        <StyledLink to="leaderboard">Leaderboard</StyledLink>
+        </StartButton>
+        <LeaderboardButton to="leaderboard">Leaderboard</LeaderboardButton>
       </ActionButtons>
     </StyledStartMenu>
   );

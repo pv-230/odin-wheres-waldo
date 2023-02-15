@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { icons } from '../data/image-maps';
 
 const Header1 = styled.h1`
@@ -72,4 +73,38 @@ const StopButton = styled(Button)`
   height: 100%;
 `;
 
-export { Header1, Header2, Text, Button, Image, CharacterImage, Check, Spinner, StopButton };
+const StyledLink = styled(Link)`
+  background-color: var(--light-color);
+  color: var(--dark-color);
+  border: 2px solid var(--dark-color);
+  border-radius: 5px;
+  padding: 10px 20px;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-decoration: none;
+
+  &:visited {
+    color: initial;
+  }
+
+  &:hover {
+    background-color: initial;
+  }
+
+  &:active {
+    background-color: initial;
+  }
+`;
+
+export {
+  Header1,
+  Header2,
+  Text,
+  Button,
+  Image,
+  CharacterImage,
+  Check,
+  Spinner,
+  StopButton,
+  StyledLink,
+};
