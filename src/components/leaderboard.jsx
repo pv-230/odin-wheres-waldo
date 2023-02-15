@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 import GlobalStyle from '../common/global-style';
 import { Header1, Header2, Image, Button, Text, Spinner } from '../common/common-styles';
@@ -69,31 +69,52 @@ function Leaderboard() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [sceneVal, setSceneVal] = useState(0);
   const [scores, setScores] = useState([]);
+  const [scorePosition, setScorePosition] = useState(0);
+  const [currentPage, setCurrentPage] = useState([]);
 
   /**
-   * Fetches current user scores after component mounts.
+   * Fetches current user scores for each scene after the component mounts.
    */
   useEffect(() => {
     (async function updateUserScores() {
-      const beachScoresSnapshot = await getDocs(collection(db, 'leaderboard', 'beach', 'users'));
-      const slopesScoresSnapshot = await getDocs(collection(db, 'leaderboard', 'slopes', 'users'));
+      const beachScoresSnapshot = await getDocs(
+        query(
+          collection(db, 'leaderboard', 'beach', 'users'),
+          orderBy('minutes'),
+          orderBy('seconds')
+        )
+      );
+      const slopesScoresSnapshot = await getDocs(
+        query(
+          collection(db, 'leaderboard', 'slopes', 'users'),
+          orderBy('minutes'),
+          orderBy('seconds')
+        )
+      );
       const stadiumScoresSnapshot = await getDocs(
-        collection(db, 'leaderboard', 'stadium', 'users')
+        query(
+          collection(db, 'leaderboard', 'stadium', 'users'),
+          orderBy('minutes'),
+          orderBy('seconds')
+        )
       );
       const beachScoresArr = [];
       const slopesScoresArr = [];
       const stadiumScoresArr = [];
+      let rank = 1;
 
       beachScoresSnapshot.forEach((score) => {
-        beachScoresArr.push({ ...score.data(), id: score.id });
+        beachScoresArr.push({ ...score.data(), id: score.id, rank: rank++ });
       });
 
+      rank = 1;
       slopesScoresSnapshot.forEach((score) => {
-        slopesScoresArr.push({ ...score.data(), id: score.id });
+        slopesScoresArr.push({ ...score.data(), id: score.id, rank: rank++ });
       });
 
+      rank = 1;
       stadiumScoresSnapshot.forEach((score) => {
-        stadiumScoresArr.push({ ...score.data(), id: score.id });
+        stadiumScoresArr.push({ ...score.data(), id: score.id, rank: rank++ });
       });
 
       setScores([beachScoresArr, slopesScoresArr, stadiumScoresArr]);
@@ -102,11 +123,49 @@ function Leaderboard() {
   }, []);
 
   /**
+   * Sets the current score page to at most five scores.
+   */
+  useEffect(() => {
+    if (!scores[sceneVal]) return;
+    const page = [];
+
+    for (let i = scorePosition; i < scorePosition + 5; i++) {
+      const score = scores[sceneVal][i];
+      if (!score) break;
+      page.push(score);
+    }
+
+    setCurrentPage(page);
+  }, [scores, scorePosition, sceneVal]);
+
+  /**
    * Event handler for scene selections.
    * @param {Event} e
    */
   function handleSceneSelection(e) {
     setSceneVal(Number(e.currentTarget.dataset.scene));
+  }
+
+  /**
+   * Increments the score page to display the next five scores.
+   */
+  function incrementPage() {
+    if (scorePosition + 5 > scores[sceneVal].length) {
+      return;
+    }
+
+    setScorePosition(scorePosition + 5);
+  }
+
+  /**
+   * Decrements the score page to display the previous five scores.
+   */
+  function decrementPage() {
+    if (scorePosition - 5 < 0) {
+      return;
+    }
+
+    setScorePosition(scorePosition - 5);
   }
 
   return (
@@ -131,27 +190,31 @@ function Leaderboard() {
         </Scenes>
         <Scores>
           {isLoaded ? (
-            <table>
-              <thead>
-                <tr>
-                  <th>Rank</th>
-                  <th>Name</th>
-                  <th>Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                {scores[sceneVal].map((score, index) => (
-                  <tr key={score.id}>
-                    <td>{index + 1}</td>
-                    <td>{score.name}</td>
-                    <td>
-                      {String(score.minutes).padStart(2, '0')}:
-                      {String(score.seconds).padStart(2, '0')}
-                    </td>
+            <>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Time</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {currentPage.map((score) => (
+                    <tr key={score.id}>
+                      <td>{score.rank}</td>
+                      <td>{score.name}</td>
+                      <td>
+                        {String(score.minutes).padStart(2, '0')}:
+                        {String(score.seconds).padStart(2, '0')}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <Button onClick={decrementPage}>Prev</Button>
+              <Button onClick={incrementPage}>Next</Button>
+            </>
           ) : (
             <Spinner />
           )}
