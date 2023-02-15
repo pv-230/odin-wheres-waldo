@@ -320,7 +320,7 @@ function Leaderboard() {
   );
 
   // Text fallback if no scores are available for the selected scene
-  if (scores[sceneVal].length === 0) {
+  if (scores[sceneVal]?.length === 0) {
     tableContent = <Text>No scores have been submitted for this scene.</Text>;
   }
 
