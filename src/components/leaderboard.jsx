@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
 
 import GlobalStyle from '../common/global-style';
-import { Header1, Header2, Image, Button, Text, Spinner } from '../common/common-styles';
+import { Header1, Image, Button, Text, Spinner } from '../common/common-styles';
 import { scenesCropped } from '../data/image-maps';
 import scenes from '../data/scenes';
 import db from '../firebase';
@@ -14,9 +15,26 @@ const StyledLeaderboard = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
   color: var(--dark-color);
   background-color: var(--light-color);
+`;
+
+const LeaderboardWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  height: 400px;
+  border: 2px solid var(--dark-color);
+`;
+
+const HeaderWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  color: var(--light-color);
+  background-color: crimson;
 `;
 
 const Scenes = styled.div`
@@ -25,9 +43,9 @@ const Scenes = styled.div`
   justify-content: center;
   align-items: center;
   gap: 10px;
+  width: 100%;
+  padding: 10px;
   background-color: #333;
-  border-radius: 5px;
-  padding: 5px;
   color: var(--light-color);
 `;
 
@@ -61,6 +79,68 @@ const SceneTitle = styled(Text)`
 const Scores = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: ${(props) => (props.isLoaded ? 'space-between' : 'center')};
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+`;
+
+const Table = styled.table`
+  table-layout: fixed;
+  border-collapse: collapse;
+  width: 100%;
+`;
+
+const TableBody = styled.tbody`
+  border: 2px solid var(--dark-color);
+`;
+
+const ColHeader = styled.th`
+  text-align: start;
+  height: 25px;
+`;
+
+const RankCol = styled(ColHeader)`
+  width: 50px;
+`;
+
+const NameCol = styled(ColHeader)`
+  width: 20ch;
+`;
+
+const TimeCol = styled(ColHeader)`
+  width: 5ch;
+`;
+
+const UserRow = styled.tr`
+  height: 25px;
+
+  &:nth-child(2n) {
+    background-color: #eee;
+  }
+`;
+
+const RankCell = styled.td`
+  padding-left: 5px;
+`;
+
+const NameCell = styled.td`
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const PageControls = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+`;
+
+const Buttons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 `;
 
 //-------------------------------------------------------------------------------------------------
@@ -144,6 +224,7 @@ function Leaderboard() {
    */
   function handleSceneSelection(e) {
     setSceneVal(Number(e.currentTarget.dataset.scene));
+    setScorePosition(0);
   }
 
   /**
@@ -172,53 +253,62 @@ function Leaderboard() {
     <>
       <GlobalStyle />
       <StyledLeaderboard>
-        <Header1>Leaderboard</Header1>
-        <Scenes>
-          <Header2>Scenes</Header2>
-          <SceneButtons>
-            <SceneButton data-scene="0" selected={sceneVal === 0} onClick={handleSceneSelection}>
-              <SceneImage src={scenesCropped.get('beach')} alt="On the Beach" />
-            </SceneButton>
-            <SceneButton data-scene="1" selected={sceneVal === 1} onClick={handleSceneSelection}>
-              <SceneImage src={scenesCropped.get('slopes')} alt="Ski Slopes" />
-            </SceneButton>
-            <SceneButton data-scene="2" selected={sceneVal === 2} onClick={handleSceneSelection}>
-              <SceneImage src={scenesCropped.get('stadium')} alt="Sports Stadium" />
-            </SceneButton>
-          </SceneButtons>
-          <SceneTitle>{scenes[sceneVal].title}</SceneTitle>
-        </Scenes>
-        <Scores>
-          {isLoaded ? (
-            <>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Rank</th>
-                    <th>Name</th>
-                    <th>Time</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentPage.map((score) => (
-                    <tr key={score.id}>
-                      <td>{score.rank}</td>
-                      <td>{score.name}</td>
-                      <td>
-                        {String(score.minutes).padStart(2, '0')}:
-                        {String(score.seconds).padStart(2, '0')}
-                      </td>
+        <LeaderboardWrapper>
+          <HeaderWrapper>
+            <Header1>Leaderboard</Header1>
+          </HeaderWrapper>
+          <Scenes>
+            <SceneButtons>
+              <SceneButton data-scene="0" selected={sceneVal === 0} onClick={handleSceneSelection}>
+                <SceneImage src={scenesCropped.get('beach')} alt="On the Beach" />
+              </SceneButton>
+              <SceneButton data-scene="1" selected={sceneVal === 1} onClick={handleSceneSelection}>
+                <SceneImage src={scenesCropped.get('slopes')} alt="Ski Slopes" />
+              </SceneButton>
+              <SceneButton data-scene="2" selected={sceneVal === 2} onClick={handleSceneSelection}>
+                <SceneImage src={scenesCropped.get('stadium')} alt="Sports Stadium" />
+              </SceneButton>
+            </SceneButtons>
+            <SceneTitle>{scenes[sceneVal].title}</SceneTitle>
+          </Scenes>
+          <Scores isLoaded={isLoaded}>
+            {isLoaded ? (
+              <>
+                <Table>
+                  <thead>
+                    <tr>
+                      <RankCol scope="col">Rank</RankCol>
+                      <NameCol scope="col">Name</NameCol>
+                      <TimeCol scope="col">Time</TimeCol>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-              <Button onClick={decrementPage}>Prev</Button>
-              <Button onClick={incrementPage}>Next</Button>
-            </>
-          ) : (
-            <Spinner />
-          )}
-        </Scores>
+                  </thead>
+                  <TableBody>
+                    {currentPage.map((score) => (
+                      <UserRow key={score.id}>
+                        <RankCell>{score.rank}</RankCell>
+                        <NameCell>{score.name}</NameCell>
+                        <td>
+                          {String(score.minutes).padStart(2, '0')}:
+                          {String(score.seconds).padStart(2, '0')}
+                        </td>
+                      </UserRow>
+                    ))}
+                  </TableBody>
+                </Table>
+                <PageControls>
+                  <Text>Page {scorePosition / 5 + 1}</Text>
+                  <Buttons>
+                    <Button onClick={decrementPage}>Prev</Button>
+                    <Link to="/">Back</Link>
+                    <Button onClick={incrementPage}>Next</Button>
+                  </Buttons>
+                </PageControls>
+              </>
+            ) : (
+              <Spinner />
+            )}
+          </Scores>
+        </LeaderboardWrapper>
       </StyledLeaderboard>
     </>
   );
