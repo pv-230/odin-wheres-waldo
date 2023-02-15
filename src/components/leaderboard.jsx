@@ -156,14 +156,15 @@ const PageIcon = styled(Image)`
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  cursor: pointer;
+  cursor: ${(props) => (props.disableIcon ? 'not-allowed' : 'pointer')};
+  filter: ${(props) => (props.disableIcon ? 'grayscale(100%)' : 'none')};
 
   &:hover {
-    background-color: lightgray;
+    background-color: ${(props) => (props.disableIcon ? 'initial' : 'lightgray')};
   }
 
   &:active {
-    background-color: #c5c5c5;
+    background-color: ${(props) => (props.disableIcon ? 'initial' : '#c5c5c5')};
   }
 `;
 
@@ -175,6 +176,8 @@ function Leaderboard() {
   const [scores, setScores] = useState([]);
   const [scorePosition, setScorePosition] = useState(0);
   const [currentPage, setCurrentPage] = useState([]);
+  const [atFirstPage, setAtFirstPage] = useState(true);
+  const [atLastPage, setAtLastPage] = useState(true);
 
   /**
    * Fetches current user scores for each scene after the component mounts.
@@ -243,6 +246,25 @@ function Leaderboard() {
   }, [scores, scorePosition, sceneVal]);
 
   /**
+   * Shows the page nav icons as gray when unable to go to next/previous page.
+   */
+  useEffect(() => {
+    if (!scores[sceneVal]) return;
+
+    if (scorePosition + 5 > scores[sceneVal].length) {
+      setAtLastPage(true);
+    } else {
+      setAtLastPage(false);
+    }
+
+    if (scorePosition - 5 < 0) {
+      setAtFirstPage(true);
+    } else {
+      setAtFirstPage(false);
+    }
+  }, [scorePosition, scores, sceneVal]);
+
+  /**
    * Event handler for scene selections.
    * @param {Event} e
    */
@@ -255,10 +277,7 @@ function Leaderboard() {
    * Increments the score page to display the next five scores.
    */
   function incrementPage() {
-    if (scorePosition + 5 > scores[sceneVal].length) {
-      return;
-    }
-
+    if (scorePosition + 5 > scores[sceneVal].length) return;
     setScorePosition(scorePosition + 5);
   }
 
@@ -266,10 +285,7 @@ function Leaderboard() {
    * Decrements the score page to display the previous five scores.
    */
   function decrementPage() {
-    if (scorePosition - 5 < 0) {
-      return;
-    }
-
+    if (scorePosition - 5 < 0) return;
     setScorePosition(scorePosition - 5);
   }
 
@@ -320,9 +336,9 @@ function Leaderboard() {
                   </TableBody>
                 </Table>
                 <PageControls>
-                  <PageIcon src={PreviousIcon} onClick={decrementPage} />
+                  <PageIcon src={PreviousIcon} onClick={decrementPage} disableIcon={atFirstPage} />
                   <Text>Page {scorePosition / 5 + 1}</Text>
-                  <PageIcon src={NextIcon} onClick={incrementPage} />
+                  <PageIcon src={NextIcon} onClick={incrementPage} disableIcon={atLastPage} />
                 </PageControls>
               </>
             ) : (
