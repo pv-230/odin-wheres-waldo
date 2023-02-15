@@ -289,6 +289,41 @@ function Leaderboard() {
     setScorePosition(scorePosition - 5);
   }
 
+  let tableContent = (
+    <>
+      <Table>
+        <thead>
+          <tr>
+            <RankCol scope="col">Rank</RankCol>
+            <NameCol scope="col">Name</NameCol>
+            <TimeCol scope="col">Time</TimeCol>
+          </tr>
+        </thead>
+        <TableBody>
+          {currentPage.map((score) => (
+            <UserRow key={score.id}>
+              <RankCell>{score.rank}</RankCell>
+              <NameCell>{score.name}</NameCell>
+              <td>
+                {String(score.minutes).padStart(2, '0')}:{String(score.seconds).padStart(2, '0')}
+              </td>
+            </UserRow>
+          ))}
+        </TableBody>
+      </Table>
+      <PageControls>
+        <PageIcon src={PreviousIcon} onClick={decrementPage} disableIcon={atFirstPage} />
+        <Text>Page {scorePosition / 5 + 1}</Text>
+        <PageIcon src={NextIcon} onClick={incrementPage} disableIcon={atLastPage} />
+      </PageControls>
+    </>
+  );
+
+  // Text fallback if no scores are available for the selected scene
+  if (scores[sceneVal].length === 0) {
+    tableContent = <Text>No scores have been submitted for this scene.</Text>;
+  }
+
   return (
     <>
       <GlobalStyle />
@@ -311,40 +346,7 @@ function Leaderboard() {
             </SceneButtons>
             <SceneTitle>{scenes[sceneVal].title}</SceneTitle>
           </Scenes>
-          <Scores isLoaded={isLoaded}>
-            {isLoaded ? (
-              <>
-                <Table>
-                  <thead>
-                    <tr>
-                      <RankCol scope="col">Rank</RankCol>
-                      <NameCol scope="col">Name</NameCol>
-                      <TimeCol scope="col">Time</TimeCol>
-                    </tr>
-                  </thead>
-                  <TableBody>
-                    {currentPage.map((score) => (
-                      <UserRow key={score.id}>
-                        <RankCell>{score.rank}</RankCell>
-                        <NameCell>{score.name}</NameCell>
-                        <td>
-                          {String(score.minutes).padStart(2, '0')}:
-                          {String(score.seconds).padStart(2, '0')}
-                        </td>
-                      </UserRow>
-                    ))}
-                  </TableBody>
-                </Table>
-                <PageControls>
-                  <PageIcon src={PreviousIcon} onClick={decrementPage} disableIcon={atFirstPage} />
-                  <Text>Page {scorePosition / 5 + 1}</Text>
-                  <PageIcon src={NextIcon} onClick={incrementPage} disableIcon={atLastPage} />
-                </PageControls>
-              </>
-            ) : (
-              <Spinner />
-            )}
-          </Scores>
+          <Scores isLoaded={isLoaded}>{isLoaded ? tableContent : <Spinner />}</Scores>
         </LeaderboardWrapper>
         <MainMenuButton to="/">Main Menu</MainMenuButton>
       </StyledLeaderboard>
