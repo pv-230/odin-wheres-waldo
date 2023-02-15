@@ -7,6 +7,8 @@ import { Header1, Image, Button, Text, Spinner, StyledLink } from '../common/com
 import { scenesCropped } from '../data/image-maps';
 import scenes from '../data/scenes';
 import db from '../firebase';
+import PreviousIcon from '../images/icons/previous.svg';
+import NextIcon from '../images/icons/next.svg';
 
 const StyledLeaderboard = styled.div`
   flex: 1;
@@ -14,6 +16,8 @@ const StyledLeaderboard = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 20px;
+  padding: 5px;
   color: var(--dark-color);
   background-color: var(--light-color);
 `;
@@ -24,7 +28,7 @@ const LeaderboardWrapper = styled.div`
   align-items: center;
   width: 100%;
   max-width: 400px;
-  height: 400px;
+  height: 370px;
   border: 2px solid var(--dark-color);
 `;
 
@@ -131,15 +135,8 @@ const NameCell = styled.td`
 
 const PageControls = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-`;
-
-const Buttons = styled.div`
-  display: flex;
   justify-content: space-between;
+  align-items: center;
   width: 100%;
 `;
 
@@ -152,6 +149,21 @@ const MainMenuButton = styled(StyledLink)`
 
   &:active {
     background-color: tomato;
+  }
+`;
+
+const PageIcon = styled(Image)`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+
+  &:hover {
+    background-color: lightgray;
+  }
+
+  &:active {
+    background-color: #c5c5c5;
   }
 `;
 
@@ -308,12 +320,9 @@ function Leaderboard() {
                   </TableBody>
                 </Table>
                 <PageControls>
+                  <PageIcon src={PreviousIcon} onClick={decrementPage} />
                   <Text>Page {scorePosition / 5 + 1}</Text>
-                  <Buttons>
-                    <Button onClick={decrementPage}>Prev</Button>
-                    <MainMenuButton to="/">Main Menu</MainMenuButton>
-                    <Button onClick={incrementPage}>Next</Button>
-                  </Buttons>
+                  <PageIcon src={NextIcon} onClick={incrementPage} />
                 </PageControls>
               </>
             ) : (
@@ -321,6 +330,7 @@ function Leaderboard() {
             )}
           </Scores>
         </LeaderboardWrapper>
+        <MainMenuButton to="/">Main Menu</MainMenuButton>
       </StyledLeaderboard>
     </>
   );
