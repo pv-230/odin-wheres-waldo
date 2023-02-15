@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { collection, getDocs } from 'firebase/firestore';
 
 import GlobalStyle from '../common/global-style';
-import { Header1, Header2, Image, Button, Text } from '../common/common-styles';
+import { Header1, Header2, Image, Button, Text, Spinner } from '../common/common-styles';
 import { scenesCropped } from '../data/image-maps';
 import scenes from '../data/scenes';
+import db from '../firebase';
 
 const StyledLeaderboard = styled.div`
   flex: 1;
@@ -12,6 +14,7 @@ const StyledLeaderboard = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 10px;
   color: var(--dark-color);
   background-color: var(--light-color);
 `;
@@ -63,7 +66,40 @@ const Scores = styled.div`
 //-------------------------------------------------------------------------------------------------
 
 function Leaderboard() {
+  const [isLoaded, setIsLoaded] = useState(false);
   const [sceneVal, setSceneVal] = useState(0);
+  const [scores, setScores] = useState([]);
+
+  /**
+   * Fetches current user scores after component mounts.
+   */
+  useEffect(() => {
+    (async function updateUserScores() {
+      const beachScoresSnapshot = await getDocs(collection(db, 'leaderboard', 'beach', 'users'));
+      const slopesScoresSnapshot = await getDocs(collection(db, 'leaderboard', 'slopes', 'users'));
+      const stadiumScoresSnapshot = await getDocs(
+        collection(db, 'leaderboard', 'stadium', 'users')
+      );
+      const beachScoresArr = [];
+      const slopesScoresArr = [];
+      const stadiumScoresArr = [];
+
+      beachScoresSnapshot.forEach((score) => {
+        beachScoresArr.push({ ...score.data(), id: score.id });
+      });
+
+      slopesScoresSnapshot.forEach((score) => {
+        slopesScoresArr.push({ ...score.data(), id: score.id });
+      });
+
+      stadiumScoresSnapshot.forEach((score) => {
+        stadiumScoresArr.push({ ...score.data(), id: score.id });
+      });
+
+      setScores([beachScoresArr, slopesScoresArr, stadiumScoresArr]);
+      setIsLoaded(true);
+    })();
+  }, []);
 
   /**
    * Event handler for scene selections.
@@ -94,20 +130,31 @@ function Leaderboard() {
           <SceneTitle>{scenes[sceneVal].title}</SceneTitle>
         </Scenes>
         <Scores>
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Bob</td>
-                <td>1:00</td>
-              </tr>
-            </tbody>
-          </table>
+          {isLoaded ? (
+            <table>
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Name</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {scores[sceneVal].map((score, index) => (
+                  <tr key={score.id}>
+                    <td>{index + 1}</td>
+                    <td>{score.name}</td>
+                    <td>
+                      {String(score.minutes).padStart(2, '0')}:
+                      {String(score.seconds).padStart(2, '0')}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <Spinner />
+          )}
         </Scores>
       </StyledLeaderboard>
     </>
