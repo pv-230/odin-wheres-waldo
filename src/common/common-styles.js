@@ -28,6 +28,7 @@ const Button = styled.button.attrs(() => ({ type: 'button' }))`
 const Image = styled.img.attrs(() => ({ draggable: 'false' }))`
   width: 100%;
   height: 100%;
+  user-select: none;
 `;
 
 const CharacterImage = styled(Image)`
