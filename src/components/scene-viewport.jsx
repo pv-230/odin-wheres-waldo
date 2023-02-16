@@ -69,6 +69,7 @@ const CharacterSelectionBox = styled.div`
   position: absolute;
   top: ${(props) => props.topVal}px;
   left: ${(props) => props.leftVal}px;
+  z-index: 1;
 `;
 
 const CharacterButtons = styled.div`
@@ -95,6 +96,7 @@ const TargetBox = styled.div`
   position: absolute;
   top: ${(props) => props.topVal}px;
   left: ${(props) => props.leftVal}px;
+  box-shadow: 0 0 0 4000px rgb(17, 17, 17, 0.5);
 `;
 
 const Marker = styled.div`
