@@ -19,6 +19,8 @@ import StadiumSmall from '../images/scenes/small/sports-stadium-small.webp';
 // Icon imports
 import CheckSvg from '../images/icons/check.svg';
 import MarkerSvg from '../images/icons/marker.svg';
+import PlusSvg from '../images/icons/plus.svg';
+import MinusSvg from '../images/icons/minus.svg';
 
 const charactersFull = new Map([
   ['waldo', WaldoFull],
@@ -49,6 +51,8 @@ const scenesCropped = new Map([
 const icons = new Map([
   ['check', CheckSvg],
   ['marker', MarkerSvg],
+  ['plus', PlusSvg],
+  ['minus', MinusSvg],
 ]);
 
 export { charactersFull, charactersCropped, scenesFull, scenesCropped, icons };

@@ -12,6 +12,7 @@ const CHAR_SELECTION_WIDTH = 300;
 const CHAR_SELECTION_HEIGHT = 115;
 const TARGET_BOX_SIZE = 100;
 const MARKER_SIZE = 128;
+const SCALE_STEP = 0.1;
 
 const StyledSceneViewport = styled.div`
   display: flex;
@@ -49,6 +50,7 @@ const SceneWrapper = styled.div.attrs(({ translateCoords, scaleVal }) => ({
 const SceneImage = styled(Image)`
   width: ${(props) => props.sceneWidth}px;
   height: ${(props) => props.sceneHeight}px;
+  user-select: none;
 `;
 
 const CharacterSelectionBox = styled.div`
@@ -102,6 +104,31 @@ const Marker = styled.div`
   position: absolute;
   top: ${(props) => props.topVal}px;
   left: ${(props) => props.leftVal}px;
+`;
+
+const ZoomControls = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+`;
+
+const ZoomButton = styled(Button)`
+  padding: 5px;
+  width: 48px;
+  height: 48px;
+  font-size: 2rem;
+  background-color: gold;
+
+  &:hover {
+    background-color: #dab900;
+  }
+
+  &:active {
+    background-color: gold;
+  }
 `;
 
 //-------------------------------------------------------------------------------------------------
@@ -238,13 +265,12 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
   }
 
   /**
-   * Event handler for zooming in or out.
+   * Adjusts the image scale to zoom in or out.
+   * @param {Boolean} zoomIn
    */
-  function handleWheel(e) {
+  function zoom(zoomIn) {
     if (isDisabled) return;
-
-    const SCALE_STEP = 0.1;
-    const scaleChange = e.deltaY > 0 ? -SCALE_STEP : SCALE_STEP;
+    var scaleChange = zoomIn ? SCALE_STEP : -SCALE_STEP;
 
     setShowSelectionBox(false);
     setShowTargetBox(false);
@@ -254,6 +280,19 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
     if (scaleVal + scaleChange < 0.2 || scaleVal + scaleChange > 2.01) return;
 
     setScaleVal((prevScaleValue) => prevScaleValue + scaleChange);
+  }
+
+  /**
+   * Event handler for zooming in or out.
+   */
+  function handleWheel(e) {
+    if (isDisabled) return;
+
+    if (e.deltaY > 0) {
+      zoom(false);
+    } else {
+      zoom(true);
+    }
   }
 
   /**
@@ -457,6 +496,15 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
         topVal={targetBoxCoords.y}
         scaleVal={scaleVal}
       />
+
+      <ZoomControls>
+        <ZoomButton onClick={() => zoom(true)}>
+          <Image src={icons.get('plus')} />
+        </ZoomButton>
+        <ZoomButton onClick={() => zoom(false)}>
+          <Image src={icons.get('minus')} />
+        </ZoomButton>
+      </ZoomControls>
     </StyledSceneViewport>
   );
 }
