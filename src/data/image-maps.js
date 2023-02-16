@@ -23,6 +23,7 @@ import PreviousSvg from '../images/icons/previous.svg';
 import NextSvg from '../images/icons/next.svg';
 import PlusSvg from '../images/icons/plus.svg';
 import MinusSvg from '../images/icons/minus.svg';
+import ResetSvg from '../images/icons/reset.svg';
 
 const charactersFull = new Map([
   ['waldo', WaldoFull],
@@ -57,6 +58,7 @@ const icons = new Map([
   ['next', NextSvg],
   ['plus', PlusSvg],
   ['minus', MinusSvg],
+  ['reset', ResetSvg],
 ]);
 
 export { charactersFull, charactersCropped, scenesFull, scenesCropped, icons };

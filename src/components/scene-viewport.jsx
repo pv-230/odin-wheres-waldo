@@ -141,6 +141,7 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
 
   // Zoom state
   const [scaleVal, setScaleVal] = useState(1);
+  const [initialScale, setInitialScale] = useState(1);
 
   // Character selection and target box states
   const [showSelectionBox, setShowSelectionBox] = useState(false);
@@ -189,6 +190,7 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
       }
     }
     setScaleVal(newImageScaleVal);
+    setInitialScale(newImageScaleVal);
   }, [scene.height]);
 
   /**
@@ -402,6 +404,16 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
     }
   }
 
+  /**
+   * Allows the user to reset the scene position to the original position.
+   */
+  function resetScenePostion() {
+    setTranslateCoords({ x: 0, y: 0 });
+    setScaleVal(initialScale);
+    setShowSelectionBox(false);
+    setShowTargetBox(false);
+  }
+
   return (
     <StyledSceneViewport topBarHeight={topBarHeight} ref={sceneRef} isDisabled={isDisabled}>
       <SceneWrapper
@@ -499,6 +511,9 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
       />
 
       <ZoomControls>
+        <ZoomButton onClick={resetScenePostion}>
+          <Image src={icons.get('reset')} />
+        </ZoomButton>
         <ZoomButton onClick={() => zoom(true)}>
           <Image src={icons.get('plus')} />
         </ZoomButton>
