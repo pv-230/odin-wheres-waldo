@@ -4,11 +4,9 @@ import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 import GlobalStyle from '../common/global-style';
 import { Header1, Image, Button, Text, Spinner, StyledLink } from '../common/common-styles';
-import { scenesCropped } from '../data/image-maps';
+import { scenesCropped, icons } from '../data/image-maps';
 import scenes from '../data/scenes';
 import db from '../firebase';
-import PreviousIcon from '../images/icons/previous.svg';
-import NextIcon from '../images/icons/next.svg';
 
 const StyledLeaderboard = styled.div`
   flex: 1;
@@ -312,9 +310,9 @@ function Leaderboard() {
         </TableBody>
       </Table>
       <PageControls>
-        <PageIcon src={PreviousIcon} onClick={decrementPage} disableIcon={atFirstPage} />
+        <PageIcon src={icons.get('previous')} onClick={decrementPage} disableIcon={atFirstPage} />
         <Text>Page {scorePosition / 5 + 1}</Text>
-        <PageIcon src={NextIcon} onClick={incrementPage} disableIcon={atLastPage} />
+        <PageIcon src={icons.get('next')} onClick={incrementPage} disableIcon={atLastPage} />
       </PageControls>
     </>
   );

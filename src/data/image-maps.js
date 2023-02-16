@@ -19,6 +19,8 @@ import StadiumSmall from '../images/scenes/small/sports-stadium-small.webp';
 // Icon imports
 import CheckSvg from '../images/icons/check.svg';
 import MarkerSvg from '../images/icons/marker.svg';
+import PreviousSvg from '../images/icons/previous.svg';
+import NextSvg from '../images/icons/next.svg';
 import PlusSvg from '../images/icons/plus.svg';
 import MinusSvg from '../images/icons/minus.svg';
 
@@ -51,6 +53,8 @@ const scenesCropped = new Map([
 const icons = new Map([
   ['check', CheckSvg],
   ['marker', MarkerSvg],
+  ['previous', PreviousSvg],
+  ['next', NextSvg],
   ['plus', PlusSvg],
   ['minus', MinusSvg],
 ]);
