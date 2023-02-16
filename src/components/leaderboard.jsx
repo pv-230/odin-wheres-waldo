@@ -249,7 +249,7 @@ function Leaderboard() {
   useEffect(() => {
     if (!scores[sceneVal]) return;
 
-    if (scorePosition + 5 > scores[sceneVal].length) {
+    if (scorePosition + 5 >= scores[sceneVal].length) {
       setAtLastPage(true);
     } else {
       setAtLastPage(false);
@@ -275,7 +275,7 @@ function Leaderboard() {
    * Increments the score page to display the next five scores.
    */
   function incrementPage() {
-    if (scorePosition + 5 > scores[sceneVal].length) return;
+    if (scorePosition + 5 >= scores[sceneVal].length) return;
     setScorePosition(scorePosition + 5);
   }
 
