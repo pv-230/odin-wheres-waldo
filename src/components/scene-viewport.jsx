@@ -110,6 +110,7 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
   // Panning states
   const [isPanning, setIsPanning] = useState(false);
   const [translateCoords, setTranslateCoords] = useState({ x: 0, y: 0 });
+  const [prevTouchCoords, setPrevTouchCoords] = useState(null);
 
   // Zoom state
   const [scaleVal, setScaleVal] = useState(1);
@@ -178,9 +179,13 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
    * Event handler for starting image panning.
    * @param {Event} e
    */
-  function handleMouseDown(e) {
-    e.preventDefault(); // Prevent image dragging
+  function handlePanStart(e) {
     if (isDisabled) return;
+
+    if (e.type === 'mousedown') {
+      e.preventDefault(); // Prevent image dragging
+    }
+
     setIsPanning(true);
     setOldTranslateCoords(translateCoords);
     setShowSelectionBox(false);
@@ -193,19 +198,43 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
    * @param {Event} e
    */
   function handleMouseMove(e) {
-    if (isPanning) {
-      setTranslateCoords((oldCoords) => ({
-        x: oldCoords.x + e.movementX,
-        y: oldCoords.y + e.movementY,
-      }));
-    }
+    if (!isPanning) return;
+
+    setTranslateCoords((oldCoords) => ({
+      x: oldCoords.x + e.movementX,
+      y: oldCoords.y + e.movementY,
+    }));
   }
 
   /**
-   * Event handler for stopping image panning.
+   * Event handler for image panning with touch events.
+   * @param {Event} e
    */
-  function handleMouseUp() {
+  function handleTouchMove(e) {
+    if (!isPanning) return;
+    var touch = e.touches[0];
+
+    if (prevTouchCoords) {
+      const newCoords = {
+        x: touch.clientX - prevTouchCoords.clientX,
+        y: touch.clientY - prevTouchCoords.clientY,
+      };
+
+      setTranslateCoords((oldCoords) => ({
+        x: oldCoords.x + newCoords.x,
+        y: oldCoords.y + newCoords.y,
+      }));
+    }
+
+    setPrevTouchCoords(touch);
+  }
+
+  /**
+   * Event handler for stopping image touch panning.
+   */
+  function handleTouchEnd() {
     setIsPanning(false);
+    setPrevTouchCoords(null);
   }
 
   /**
@@ -336,9 +365,12 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
         isPanning={isPanning}
         translateCoords={translateCoords}
         scaleVal={scaleVal}
-        onMouseDown={handleMouseDown}
+        onMouseDown={handlePanStart}
+        onTouchStart={handlePanStart}
         onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
+        onTouchMove={handleTouchMove}
+        onMouseUp={() => setIsPanning(false)}
+        onTouchEnd={handleTouchEnd}
         onWheel={handleWheel}
         onClick={handleClick}
         isDisabled={isDisabled}
