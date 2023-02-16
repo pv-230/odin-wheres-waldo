@@ -148,14 +148,14 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
     // is scaled to fit the viewport.
     if (sceneImageHeight > sceneViewportHeight) {
       // Scales image down
-      while (tempImageHeight > sceneViewportHeight && newImageScaleVal > 0.1) {
+      while (tempImageHeight > sceneViewportHeight && newImageScaleVal >= 0.3) {
         tempImageHeight = sceneImageHeight;
         newImageScaleVal -= 0.1;
         tempImageHeight *= newImageScaleVal;
       }
     } else if (sceneImageHeight < sceneViewportHeight) {
       // Scales image up
-      while (tempImageHeight < sceneViewportHeight && newImageScaleVal < 4) {
+      while (tempImageHeight < sceneViewportHeight && newImageScaleVal < 2) {
         tempImageHeight = sceneImageHeight;
         newImageScaleVal += 0.1;
         tempImageHeight *= newImageScaleVal;
@@ -212,7 +212,7 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
    */
   function handleTouchMove(e) {
     if (!isPanning) return;
-    var touch = e.touches[0];
+    const touch = e.touches[0];
 
     if (prevTouchCoords) {
       const newCoords = {
@@ -242,12 +242,18 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
    */
   function handleWheel(e) {
     if (isDisabled) return;
+
     const SCALE_STEP = 0.1;
     const scaleChange = e.deltaY > 0 ? -SCALE_STEP : SCALE_STEP;
-    setScaleVal((prevScaleValue) => prevScaleValue + scaleChange);
+
     setShowSelectionBox(false);
     setShowTargetBox(false);
     setHasSelected(false);
+
+    // Prevents zooming in/out too far
+    if (scaleVal + scaleChange < 0.2 || scaleVal + scaleChange > 2.01) return;
+
+    setScaleVal((prevScaleValue) => prevScaleValue + scaleChange);
   }
 
   /**
