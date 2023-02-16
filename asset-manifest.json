@@ -1,0 +1,34 @@
+{
+  "files": {
+    "main.css": "/static/css/main.58462fbc.css",
+    "main.js": "/static/js/main.6251170a.js",
+    "static/media/sports-stadium.webp": "/static/media/sports-stadium.3eeec282ee4194e9b878.webp",
+    "static/media/ski-slopes.webp": "/static/media/ski-slopes.8841050d8a5743e6f259.webp",
+    "static/media/on-the-beach.webp": "/static/media/on-the-beach.c0ec014d538df85e4797.webp",
+    "static/media/sports-stadium-small.webp": "/static/media/sports-stadium-small.2e94f00741bd16ef2d33.webp",
+    "static/media/on-the-beach-small.webp": "/static/media/on-the-beach-small.d3bbb8b261c7207ce8e9.webp",
+    "static/media/ski-slopes-small.webp": "/static/media/ski-slopes-small.18b7b7981974cbf04b6a.webp",
+    "static/media/whitebeard-full.webp": "/static/media/whitebeard-full.991fdb1222db390d87c8.webp",
+    "static/media/wenda-full.webp": "/static/media/wenda-full.f9d089076fba6a150fe7.webp",
+    "static/media/odlaw-full.webp": "/static/media/odlaw-full.7b06dc8ed74a932dcf6e.webp",
+    "static/media/waldo-full.webp": "/static/media/waldo-full.c9ce1f464a03e7d2f8b9.webp",
+    "static/media/wenda-small.webp": "/static/media/wenda-small.d4a4559a9bd153bb8891.webp",
+    "static/media/waldo-small.webp": "/static/media/waldo-small.6954f97b65e4217846ce.webp",
+    "static/media/odlaw-small.webp": "/static/media/odlaw-small.133bd60cbc4d5f728941.webp",
+    "static/media/whitebeard-small.webp": "/static/media/whitebeard-small.8d3149dd08b47bb431c3.webp",
+    "index.html": "/index.html",
+    "static/media/reset.svg": "/static/media/reset.f3082f232f39d7d5c14d5d6dd50475de.svg",
+    "static/media/marker.svg": "/static/media/marker.f46b6ce1b31e63efa90d7ddab07403c0.svg",
+    "static/media/check.svg": "/static/media/check.df286c2bb7ecac959108c20473982d79.svg",
+    "static/media/previous.svg": "/static/media/previous.7fccb57cb40cfdb1ac1a6ad632425dbb.svg",
+    "static/media/next.svg": "/static/media/next.15c09e868cf66e489a63a2b24c27364a.svg",
+    "static/media/plus.svg": "/static/media/plus.f99da83b1c48c57fb9b6018099bb28c9.svg",
+    "static/media/minus.svg": "/static/media/minus.31384bfc446b779830651a50860c45a6.svg",
+    "main.58462fbc.css.map": "/static/css/main.58462fbc.css.map",
+    "main.6251170a.js.map": "/static/js/main.6251170a.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.58462fbc.css",
+    "static/js/main.6251170a.js"
+  ]
+}
