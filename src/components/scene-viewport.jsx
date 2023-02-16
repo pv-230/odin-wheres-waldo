@@ -408,6 +408,7 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
    * Allows the user to reset the scene position to the original position.
    */
   function resetScenePostion() {
+    if (isDisabled) return;
     setTranslateCoords({ x: 0, y: 0 });
     setScaleVal(initialScale);
     setShowSelectionBox(false);
