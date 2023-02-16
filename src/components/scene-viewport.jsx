@@ -418,6 +418,7 @@ function SceneViewport({ scene, topBarHeight, charactersFound, setCharactersFoun
         onTouchEnd={handleTouchEnd}
         onWheel={handleWheel}
         onClick={handleClick}
+        onMouseOut={() => setIsPanning(false)}
         isDisabled={isDisabled}
       >
         <SceneImage src={scene.imageSrc} sceneWidth={scene.width} sceneHeight={scene.height} />
