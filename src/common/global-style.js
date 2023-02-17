@@ -16,6 +16,7 @@ const GlobalStyle = createGlobalStyle`
     display: flex;
     min-height: 100%;
     font-family: sans-serif;
+    overscroll-behavior: none;
   }
 
   body,
