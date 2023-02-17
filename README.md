@@ -9,8 +9,8 @@ https://www.theodinproject.com/lessons/node-path-javascript-where-s-waldo-a-phot
 - Asset loading progress is shown during initial app start
 - Images have been converted to webp format to reduce loading times
 - Images have been manually edited for background transparency and optimal size
-- ~~Designed with mobile device use in mind~~ *Currently a bit broken with mobile browsers pull-to-refresh feature*
-- Implementation of panning and zooming for ~~both~~ desktop ~~and mobile~~
+- ~~Designed with mobile device use in mind~~ *Currently a bit broken on older iOS browsers*
+- Implementation of panning and zooming for desktop and mobile (mobile usage is a little broken)
 - Players can submit their time score after finding all the characters in a scene
 - Leaderboard with pages that display player scores saved in Firestore
 - High res scene images that become scaled to the user's device viewport
