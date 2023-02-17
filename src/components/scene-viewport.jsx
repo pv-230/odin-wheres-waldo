@@ -45,6 +45,7 @@ const SceneWrapper = styled.div.attrs(({ translateCoords, scaleVal }) => ({
     return cursorValue;
   }};
   position: relative;
+  overscroll-behavior: none;
 `;
 
 const SceneImage = styled(Image)`
