@@ -19,11 +19,19 @@ const GlobalStyle = createGlobalStyle`
     overscroll-behavior-y: none;
   }
 
+  body {
+    overflow: hidden;
+  }
+
   body,
   #root {
     flex: 1;
     display: flex;
     overscroll-behavior-y: none;
+  }
+
+  #root {
+    overflow-y: auto;
   }
 `;
 
