@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/odin-wheres-waldo/static/css/main.58462fbc.css",
-    "main.js": "/odin-wheres-waldo/static/js/main.848f35b1.js",
+    "main.js": "/odin-wheres-waldo/static/js/main.17e750aa.js",
     "static/media/sports-stadium.webp": "/odin-wheres-waldo/static/media/sports-stadium.3eeec282ee4194e9b878.webp",
     "static/media/ski-slopes.webp": "/odin-wheres-waldo/static/media/ski-slopes.8841050d8a5743e6f259.webp",
     "static/media/on-the-beach.webp": "/odin-wheres-waldo/static/media/on-the-beach.c0ec014d538df85e4797.webp",
@@ -25,10 +25,10 @@
     "static/media/plus.svg": "/odin-wheres-waldo/static/media/plus.f99da83b1c48c57fb9b6018099bb28c9.svg",
     "static/media/minus.svg": "/odin-wheres-waldo/static/media/minus.31384bfc446b779830651a50860c45a6.svg",
     "main.58462fbc.css.map": "/odin-wheres-waldo/static/css/main.58462fbc.css.map",
-    "main.848f35b1.js.map": "/odin-wheres-waldo/static/js/main.848f35b1.js.map"
+    "main.17e750aa.js.map": "/odin-wheres-waldo/static/js/main.17e750aa.js.map"
   },
   "entrypoints": [
     "static/css/main.58462fbc.css",
-    "static/js/main.848f35b1.js"
+    "static/js/main.17e750aa.js"
   ]
 }
